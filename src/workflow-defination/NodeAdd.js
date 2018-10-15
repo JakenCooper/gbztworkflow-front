@@ -8,26 +8,28 @@ class NodeAdd extends React.Component{
         this.saveNode = this.saveNode.bind(this);
     }
     componentDidMount(){
+        let flowid = this.props['flow'].id;
         $('#button_nodeadd').click(function(){
-            $('#modal_nodeadd').on('show.bs.modal',function(){
-                $('#form_nodeadd').find('input[type="text"]').val('');
-                $('#form_nodeadd').find('textarea').html('');
-                $('#form_nodeadd').find('textarea').val('');
+            $('#modal_nodeadd_'+flowid).on('show.bs.modal',function(){
+                $('#form_nodeadd_'+flowid).find('input[type="text"]').val('');
+                $('#form_nodeadd_'+flowid).find('textarea').html('');
+                $('#form_nodeadd_'+flowid).find('textarea').val('');
             });
-            $('#modal_nodeadd').modal('show');
+            $('#modal_nodeadd_'+flowid).modal('show');
         });
     }
     saveNode(){
-        let data = serializeformajax($('#form_nodeadd'));
+        let flowid = this.props['flow'].id;
+        let data = serializeformajax($('#form_nodeadd_'+flowid));
         let nodeobj = this.props['node'];
-        ajaxreq($('#form_nodeadd').attr('action'),{
+        ajaxreq($('#form_nodeadd_'+flowid).attr('action'),{
             type:'post',
             contentType:ajax_content_type,
             data:data,
             async:false,
             dataType:'text',
             success:(result) =>{
-                $('#modal_nodeadd').modal('hide');
+                $('#modal_nodeadd_'+flowid).modal('hide');
                 nodeobj.refresh();
             }
         });
@@ -37,7 +39,7 @@ class NodeAdd extends React.Component{
             <div>
                 <button className={"btn btn-info pull-right"} id={"button_nodeadd"}><span className="glyphicon glyphicon-plus"></span>
                     &nbsp; 添 加 节 点</button>
-                <div className="modal fade" id="modal_nodeadd" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
+                <div className="modal fade" id={"modal_nodeadd_"+this.props['flow'].id} tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
                      aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -49,7 +51,7 @@ class NodeAdd extends React.Component{
                                 </h4>
                             </div>
                             <div className="modal-body">
-                                <form action={adminPath+'/defination/nodes'} method={"post"} id={"form_nodeadd"}>
+                                <form action={adminPath+'/defination/nodes'} method={"post"} id={"form_nodeadd_"+this.props['flow'].id}>
                                     <input type={"hidden"} name={"flowId"} value={this.props["flow"].id}/>
                                     <div className="form form-horizontal row container-fluid">
                                         <div className="form-group">

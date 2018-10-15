@@ -439,6 +439,8 @@
 
 			// Check node
 			node.state.checked = true;
+			// add by zhangys
+			//node.backColor="#1abc9c";
 
 			if (!options.silent) {
 				this.$element.trigger('nodeChecked', $.extend(true, {}, node));
@@ -448,6 +450,8 @@
 
 			// Uncheck node
 			node.state.checked = false;
+			//node.backColor = 'white';
+
 			if (!options.silent) {
 				this.$element.trigger('nodeUnchecked', $.extend(true, {}, node));
 			}

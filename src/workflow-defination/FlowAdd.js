@@ -5,18 +5,33 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax} from '../common'
 class FlowAdd extends React.Component{
     constructor(){
         super();
+        this.state={flows:[]};
         this.saveFlow = this.saveFlow.bind(this);
     }
     componentDidMount(){
         $('#button_flowadd').click(function(){
             $('#modal_flowadd').on('show.bs.modal',function(){
-                $('#form_flowadd').find('input').val('');
+                //$('#form_flowadd').find('input').val('');
+                $('#tab_flowadd').find('[data-toggle="tab"]:eq(0)').click();
             });
             $('#modal_flowadd').modal('show');
         });
 
+        ajaxreq(adminPath+'/metadata/defaults',{async:false, success:(data)=>{
+            $('#div_flowadd_connection [name="bussDbHost"]').val(data.bussDbHost);
+            $('#div_flowadd_connection [name="bussDbPort"]').val(data.bussDbPort);
+            $('#div_flowadd_connection [name="bussDbName"]').val(data.bussDbName);
+            $('#div_flowadd_connection [name="bussDbUserName"]').val(data.bussDbUserName);
+            $('#div_flowadd_connection [name="bussDbUserPwd"]').val(data.bussDbUserPwd);
+            if(data.bussDbType == 'mysql'){
+                $('#div_flowadd_connection select').val('mysql');
+            }else if (data.bussDbType == 'oscar'){
+                $('#div_flowadd_connection select').val('oscar');
+            }
+        }});
+
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
-            ajaxreq(adminPath+'/metadata',{
+            ajaxreq(adminPath+'/metadata/tables',{
                 type:'post',
                 contentType:ajax_content_type,
                 async:false,
@@ -24,8 +39,11 @@ class FlowAdd extends React.Component{
                 dataType:'text',
                 success:(data)=>{
                     let treedata = JSON.parse(data);
-                    $('#div_flowadd_tableselection > div').treeview({data:treedata});
-                    //$('#div_flowadd_tableselection > div').treeview('checkNode',['tbl_27',{silent:true}]);
+                    $('#div_flowadd_tableselection > div').treeview({data:treedata,multiSelect : false,
+                        showCheckbox : false,selectedBackColor:'#1abc9c',selectedColor:'#000000',showIcon:false});
+                    let treesection = $('#div_flowadd_tableselection > div');
+                    treesection.treeview('selectNode',[3,{silent:true}]);
+
                 }
             });
         });
@@ -42,11 +60,6 @@ class FlowAdd extends React.Component{
                 refreshWin();
             }
         });
-    }
-    saveFlow1(e){
-        // $('#tab_flowadd').find('li:eq(1)').find('a').click();
-        e.preventDefault();
-        return false;
     }
     render(){
         return(
@@ -83,7 +96,7 @@ class FlowAdd extends React.Component{
                                                     <label className="control-label">* 流程名称</label>
                                                 </div>
                                                 <div className="col-lg-10">
-                                                    <input type={"text"} name="flowName" className={"form-control"}/>
+                                                    <input type={"text"} name="flowName" className={"form-control"} />
                                                 </div>
                                             </div>
                                             <div className="form-group">
@@ -93,7 +106,7 @@ class FlowAdd extends React.Component{
                                                 <div className="col-lg-10">
                                                     <select name="bussDbType" className={"form-control"}>
                                                         <option value={"mysql"} selected>mysql</option>
-                                                        <option value={"oscar"}>神通</option>
+                                                        <option value={"oscar"}>神通数据库</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -102,7 +115,7 @@ class FlowAdd extends React.Component{
                                                     <label className="control-label">* 数据库主机</label>
                                                 </div>
                                                 <div className="col-lg-10">
-                                                    <input type={"text"} name="bussDbHost" className={"form-control"}/>
+                                                    <input type="text" name="bussDbHost" className={"form-control"}  />
                                                 </div>
                                             </div>
                                             <div className="form-group">
@@ -142,7 +155,7 @@ class FlowAdd extends React.Component{
                                         </div>
 
                                         <div className="tab-pane fade" id="div_flowadd_tableselection">
-                                            <div></div>
+                                            <div className={"overflowy"}></div>
                                         </div>
                                         <div className="tab-pane fade" id="div_flowadd_columnselection">
                                             cxbcvxbvcx
