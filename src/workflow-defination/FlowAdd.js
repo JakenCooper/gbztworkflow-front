@@ -15,9 +15,20 @@ class FlowAdd extends React.Component{
             $('#modal_flowadd').modal('show');
         });
 
-      /*  $('[name="title_flowadd"]').click(function(){
-            alert(arguments.length);
-        });*/
+        $('#tab_flowadd').find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
+            ajaxreq(adminPath+'/metadata',{
+                type:'post',
+                contentType:ajax_content_type,
+                async:false,
+                data:JSON.stringify({bussDbType:'松松宋宋'}),
+                dataType:'text',
+                success:(data)=>{
+                    let treedata = JSON.parse(data);
+                    $('#div_flowadd_tableselection > div').treeview({data:treedata});
+                    //$('#div_flowadd_tableselection > div').treeview('checkNode',['tbl_27',{silent:true}]);
+                }
+            });
+        });
     }
     saveFlow(){
         let data = serializeformajax($('#form_flowadd'));
@@ -48,7 +59,7 @@ class FlowAdd extends React.Component{
                                     aria-hidden="true">&times;</button>
                             <h4 className="modal-title text-danger" id="myModalLabel">
                                 + 添 加 流 程
-                                &nbsp;&nbsp;<strong> [囍囍]  ╮(￣▽￣| ")╭  [囍囍]</strong>
+                                &nbsp;&nbsp;<strong> [ 囍 ]  ╮(￣▽￣| ")╭  [ 囍 ]</strong>
                             </h4>
                         </div>
                         <div className="modal-body">
@@ -131,7 +142,7 @@ class FlowAdd extends React.Component{
                                         </div>
 
                                         <div className="tab-pane fade" id="div_flowadd_tableselection">
-                                            fdsfds
+                                            <div></div>
                                         </div>
                                         <div className="tab-pane fade" id="div_flowadd_columnselection">
                                             cxbcvxbvcx
