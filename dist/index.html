@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>国博政通工作流引擎</title>
+    <link rel="stylesheet" type="text/css" href="./bootstrap3/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="./mloading/jquery.mloading.css">
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <script type="text/javascript" src="./jquery/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="./bootstrap3/js/bootstrap.js"></script>
+    <script type="text/javascript" src="./mloading/jquery.mloading.js"></script>
+
+    <script type="text/javascript">
+        var alert_tag = true;
+        var adminPath = 'http://localhost:8666/gw';
+        $(function(){
+            $('#index_menugroup .panel-title').click(function(event){
+                $(event.target).find('a').click();
+            });
+            $('#linecanvas').hide();
+            $('body').mLoading({
+                mask:false,
+                text:' ☎ 提交ing... ☏'
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse">
+        <section class="container-fluid">
+            <div class="navbar-header">
+                <h2 class="navbar-text">国博政通工作流引擎</h2>
+            </div>
+        </section>
+    </nav>
+    <section class="container-fluid" id="main">
+    </section>
+
+
+    <div id="section_flowadd"></div>
+
+
+    <script type="text/javascript" src="bundle.js"></script>
+</body>
+</html>
