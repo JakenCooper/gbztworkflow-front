@@ -33,8 +33,10 @@
 
 		levels: 2,
 
-		expandIcon: 'glyphicon glyphicon-plus',
-		collapseIcon: 'glyphicon glyphicon-minus',
+		/*expandIcon: 'glyphicon glyphicon-plus',
+		collapseIcon: 'glyphicon glyphicon-minus',*/
+        expandIcon: 'glyphicon glyphicon-plus',
+        collapseIcon: 'glyphicon glyphicon-minus',
 		emptyIcon: 'glyphicon',
 		nodeIcon: '',
 		selectedIcon: '',

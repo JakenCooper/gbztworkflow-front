@@ -14,6 +14,7 @@ class Node extends React.Component{
     }
     refresh(){
         let flowid = this.props["flow"].id;
+        window.currentflowid = flowid;
         ajaxreq(adminPath+'/defination/flows/'+flowid+'/nodes',{success:(nodes)=>{
                 this.setState({nodes:nodes});
             }});

@@ -35,7 +35,7 @@ const ajaxreqcomp =() =>{
 const ajaxreq = (url,{type='get',async=true,contentType='application/x-www-form-urlencoded;charset=UTF-8',
 data={},dataType='json',xhrFields={withCredentials: true},success=function(){},error=ajaxreqerrorhandle
     ,complete=ajaxreqcomp}={}) => {
-    $('body').mLoading('show');
+    //$('body').mLoading('show');
     $.ajax({
         url:url,
         type:type,
@@ -64,4 +64,13 @@ const refreshWin = () =>{
     window.location.reload();
 };
 
-export {ajaxreq,ajax_content_type,serializeformajax,refreshWin};
+
+const CommonObj ={
+    genTreeView : (singleselect,data)=>{
+        return {data:data,multiSelect : singleselect?false:true,
+            showCheckbox : false,
+            selectedBackColor:'#1abc9c',selectedColor:'#000000',showIcon:false};
+    }
+};
+
+export {ajaxreq,ajax_content_type,serializeformajax,refreshWin,CommonObj};

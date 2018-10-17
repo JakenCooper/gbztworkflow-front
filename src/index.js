@@ -10,11 +10,15 @@ class SysMenu extends React.Component{
     constructor(){
         super();
         this.state = {flows:[]};
+        this.changeworkflow = this.changeworkflow.bind(this);
     }
     componentDidMount(){
         ajaxreq(adminPath+'/defination/flows',{success:(flows) =>{
             this.setState({flows:flows});
         }});
+    }
+    changeworkflow(e,flowid){
+        window.currentflowid = flowid;
     }
     render(){
         let flowmenuarr = new Array();
@@ -22,10 +26,10 @@ class SysMenu extends React.Component{
         let flowmenucontent,tabcontent = null;
         for(let [index,flow] of this.state.flows.entries()) {
             if (index == 0) {
-                flowmenucontent = (<li className="active"><a href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.name}</a></li>);
+                flowmenucontent = (<li className="active"><a onClick={this.changeworkflow.bind(this,event,flow.id)} href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.flowName}</a></li>);
                 tabcontent = (<div className="tab-pane fade in active" id={"tabcontent_"+flow.id}><Node flow={flow}/></div>)
             }else{
-                flowmenucontent = (<li><a href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.name}</a></li>);
+                flowmenucontent = (<li><a onClick={this.changeworkflow.bind(this,event,flow.id)}  href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.flowName}</a></li>);
                 tabcontent = (<div className="tab-pane fade in" id={"tabcontent_"+flow.id}><Node flow={flow}/></div>)
             }
             flowmenuarr.push(flowmenucontent);
