@@ -84,6 +84,14 @@ class NodeAdd extends React.Component{
                                             </div>
                                         </div>
                                         <div className="form-group">
+                                            <div className="col-lg-2 text-right">
+                                                <label className="control-label">排序号</label>
+                                            </div>
+                                            <div className="col-lg-10">
+                                                <input type={"number"} name={"sortNum"} min={"1"} max={"100"} placeholder={"1~100的整数"}/>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
                                                     <label>
