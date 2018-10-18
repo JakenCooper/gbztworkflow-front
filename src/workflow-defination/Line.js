@@ -285,7 +285,7 @@ class Line extends React.Component{
 
                 <div className="modal fade" id={"mode_lineadd_"+outernode.id} tabIndex="-1" role="dialog"
                      aria-hidden="true">
-                    <div className="modal-dialog">
+                    <div className="modal-dialog smallmodal">
                         <div className="modal-content bg-danger">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal"
@@ -322,6 +322,66 @@ class Line extends React.Component{
                                             </div>
                                         </div>
                                         <div className="form-group">
+                                            <div className="col-lg-2 text-right">
+                                                <label className="control-label">任务类型：</label>
+                                            </div>
+                                            <div className="col-lg-10 clearfix">
+                                                <div className={"radio pull-left"}>
+                                                    <label>
+                                                        <input  type="radio" name="taskType"  value="usertask"/> 用户任务
+                                                    </label>
+                                                </div>
+                                                <div className={"radio pull-left marginleft-normal"}>
+                                                    <label>
+                                                        <input  type="radio" name="taskType" value="systask"/> 系统任务
+                                                    </label>
+                                                </div>
+                                                <div className={"clearfix"}>
+                                                </div>
+                                                <br/>
+                                                <div className={"form-control "} style={{border:'none'}}>
+                                                    <label>系统任务类型：</label>
+                                                </div>
+                                                <select name={"sysTaskName"} className={"form-control"}>
+                                                    <option value={"auto_finish"}>自动完成</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="col-lg-2 text-right">
+                                                <label className="control-label">实例类型：</label>
+                                            </div>
+                                            <div className="col-lg-10 clearfix">
+                                                <div className={"radio pull-left"}>
+                                                    <label>
+                                                        <input  type="radio" name="finishType"   value="single" /> 单实例
+                                                    </label>
+                                                </div>
+                                                <div className={"radio pull-left marginleft-normal"}>
+                                                    <label>
+                                                        <input  type="radio" name="finishType" value="multi"/> 多实例
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="col-lg-2 text-right">
+                                                <label className="control-label">执行类型：</label>
+                                            </div>
+                                            <div className="col-lg-10 clearfix">
+                                                <div className={"radio pull-left"}>
+                                                    <label>
+                                                        <input  type="radio" name="execType"  value="block" /> 串行
+                                                    </label>
+                                                </div>
+                                                <div className={"radio pull-left marginleft-normal"}>
+                                                    <label>
+                                                        <input  type="radio" name="execType" value="concurrent" /> 并行
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
                                                     <label>
@@ -333,13 +393,9 @@ class Line extends React.Component{
                                                         <input type="checkbox" name={"canRetreat"} id={"chk_lineadd_retreat_"+outernode.id} value={"true"}/> 可退回
                                                     </label>
                                                 </div>
-                                                <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
-                                                    <label>
-                                                        <input type="checkbox" name={"execSingle"} id={"chk_lineadd_execsingle_"+outernode.id} checked value={"true"}/> 单人任务
-                                                    </label>
-                                                </div>
                                             </div>
                                         </div>
+
 
                                     </div>
                                 </form>

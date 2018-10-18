@@ -132,16 +132,17 @@ class FlowAdd extends React.Component{
         for(let [index,ele] of columns.entries()){
             columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
         }
+
         let oridata = {
-            flowName:flowname,
             bussTableName:tablename,
             bussColumns:columnnamearr
         }
 
+        let reqdata = serializeformajax($('#form_flowadd_connection'),oridata);
         ajaxreq(adminPath+'/defination/flows',{
             type:'post',
             contentType:ajax_content_type,
-            data:JSON.stringify(oridata),
+            data:reqdata,
             async:false,
             dataType:'text',
             success:(result) =>{
@@ -238,6 +239,14 @@ class FlowAdd extends React.Component{
                                                     </div>
                                                     <div className="col-lg-10">
                                                         <input type={"password"} name="bussDbUserPwd" className={"form-control"}/>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <div className="col-lg-2 text-right">
+                                                        <label className="control-label">* formkey?</label>
+                                                    </div>
+                                                    <div className="col-lg-10">
+                                                        <input type={"text"} name="formKey" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                             </form>

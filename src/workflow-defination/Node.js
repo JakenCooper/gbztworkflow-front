@@ -28,6 +28,7 @@ class Node extends React.Component{
             if(node.beginNode){
                 nodelinecontent =(
                     <tr className={"bg-success"}>
+                        <td className={"vertial-center"}>{node.nodeDefId}</td>
                         <td className={"vertial-center"}>{node.name}</td>
                         <td className={"vertial-center"}>{node.description}</td>
                         <td className={"vertial-center"}>
@@ -44,6 +45,7 @@ class Node extends React.Component{
             }else if(node.endNode){
                 nodelinecontent =(
                     <tr className={"bg-warning"}>
+                        <td className={"vertial-center"}>{node.nodeDefId}</td>
                         <td className={"vertial-center"}>{node.name}</td>
                         <td className={"vertial-center"}>{node.description}</td>
                         <td className={"vertial-center"}>
@@ -60,6 +62,7 @@ class Node extends React.Component{
             }else{
                 nodelinecontent =(
                     <tr className={"bg-info"}>
+                        <td className={"vertial-center"}>{node.nodeDefId}</td>
                         <td className={"vertial-center"}>{node.name}</td>
                         <td className={"vertial-center"}>{node.description}</td>
                         <td className={"vertial-center"}>
@@ -96,9 +99,10 @@ class Node extends React.Component{
                     </caption>
                     <thead className={"bg-primary text-lg"}>
                         <tr>
-                            <td style={{width:'33%'}}><strong>节点名称</strong></td>
-                            <td style={{width:'33%'}}><strong>节点描述</strong></td>
-                            <td style={{width:'33%'}}><strong>操  作</strong></td>
+                            <td style={{width:'16%'}}><strong>节点id</strong></td>
+                            <td style={{width:'30%'}}><strong>节点名称</strong></td>
+                            <td style={{width:'19%'}}><strong>节点描述</strong></td>
+                            <td style={{width:'40%'}}><strong>操  作</strong></td>
                         </tr>
                     </thead>
                     <tbody>

@@ -51,12 +51,13 @@ data={},dataType='json',xhrFields={withCredentials: true},success=function(){},e
 };
 
 // ele can be any jquery obj
-const serializeformajax = (ele) => {
+const serializeformajax = (ele,data={}) => {
     let formdata = ele.serializeArray();
     let obj = {};
     $.each(formdata,function(i,v){
         obj[v.name] = v.value;
     });
+    Object.assign(obj,data);
     return JSON.stringify(obj);
 }
 

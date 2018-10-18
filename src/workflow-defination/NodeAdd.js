@@ -9,7 +9,7 @@ class NodeAdd extends React.Component{
     }
     componentDidMount(){
         let flowid = this.props['flow'].id;
-        $('#button_nodeadd').click(function(){
+        $('#button_nodeadd_'+flowid).click(function(){
             $('#modal_nodeadd_'+flowid).on('show.bs.modal',function(){
                 $('#form_nodeadd_'+flowid).find('input[type="text"]').val('');
                 $('#form_nodeadd_'+flowid).find('textarea').html('');
@@ -20,6 +20,11 @@ class NodeAdd extends React.Component{
     }
     saveNode(){
         let flowid = this.props['flow'].id;
+        let nodeDefId = $('#form_nodeadd_'+flowid).find('[name="nodeDefId"]').val();
+        if(nodeDefId == '' || nodeDefId.split('-').length == 0 || nodeDefId.indexOf("audit-")!=0){
+            alert('节点id格式错误');
+            return ;
+        }
         let data = serializeformajax($('#form_nodeadd_'+flowid));
         let nodeobj = this.props['node'];
         ajaxreq($('#form_nodeadd_'+flowid).attr('action'),{
@@ -37,7 +42,7 @@ class NodeAdd extends React.Component{
     render(){
         return(
             <div>
-                <button className={"btn btn-info pull-right"} id={"button_nodeadd"}><span className="glyphicon glyphicon-plus"></span>
+                <button className={"btn btn-info pull-right"} id={"button_nodeadd_"+this.props['flow'].id}><span className="glyphicon glyphicon-plus"></span>
                     &nbsp; 添 加 节 点</button>
                 <div className="modal fade" id={"modal_nodeadd_"+this.props['flow'].id} tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
                      aria-hidden="true">
@@ -54,6 +59,14 @@ class NodeAdd extends React.Component{
                                 <form action={adminPath+'/defination/nodes'} method={"post"} id={"form_nodeadd_"+this.props['flow'].id}>
                                     <input type={"hidden"} name={"flowId"} value={this.props["flow"].id}/>
                                     <div className="form form-horizontal row container-fluid">
+                                        <div className="form-group">
+                                            <div className="col-lg-2 text-right">
+                                                <label className="control-label">* 节点id</label>
+                                            </div>
+                                            <div className="col-lg-10">
+                                                <input type={"text"} name="nodeDefId" className={"form-control"} placeholder={"audit-xx"}/>
+                                            </div>
+                                        </div>
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label">* 节点名称</label>
