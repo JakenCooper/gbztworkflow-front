@@ -243,10 +243,26 @@ class FlowAdd extends React.Component{
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* formkey?</label>
+                                                        <label className="control-label">* 模块名称（英）</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="formKey" className={"form-control"}/>
+                                                        <input type={"text"} name="moduleName" className={"form-control"}/>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <div className="col-lg-2 text-right">
+                                                        <label className="control-label">* 模块名称（中）</label>
+                                                    </div>
+                                                    <div className="col-lg-10">
+                                                        <input type={"text"} name="moduleNameCn" className={"form-control"}/>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <div className="col-lg-2 text-right">
+                                                        <label className="control-label">* 模块路径</label>
+                                                    </div>
+                                                    <div className="col-lg-10">
+                                                        <input type={"text"} name="moduleRootPath" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                             </form>
