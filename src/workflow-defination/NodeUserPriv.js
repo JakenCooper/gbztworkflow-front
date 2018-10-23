@@ -6,6 +6,7 @@ class NodeUserPriv extends React.Component{
     constructor(){
         super();
         this.state={nodes:[],treedata:[]};
+        this.saveNodeUserPriv = this.saveNodeUserPriv.bind(this);
     }
     componentDidMount(){
         let flowid=this.props["flow"].id;
@@ -21,7 +22,7 @@ class NodeUserPriv extends React.Component{
 
         if(nodes.length >0){
             let firstnodeid = nodes[0].id;
-            ajaxreq(adminPath+'/nodeuserpriv/'+flowid+'/'+firstnodeid,{async:false,success:(data)=>{
+            ajaxreq(adminPath+'/usernodepriv/'+flowid+'/'+firstnodeid,{async:false,success:(data)=>{
                     treedata=data;
             }});
 
@@ -55,9 +56,9 @@ class NodeUserPriv extends React.Component{
                }
            };
 
-
             var t = $("#user_tree_"+flowid);
             t = $.fn.zTree.init(t, localsetting, treedata);
+
             outer.treeobj = t;
             $('#btn_tree_select_all_'+flowid).click(function(){
                 outer.treeobj.checkAllNodes(true);
@@ -66,20 +67,39 @@ class NodeUserPriv extends React.Component{
                 outer.treeobj.checkAllNodes(false);
             });
 
-            /*let nodes=outer.treeobj.getCheckedNodes(true);
-            for(var i=0;i<nodes.length;i++){
-                if(nodes[i].value!='invalid'){
-                    alert(nodes[i].value);
-                }
-            }*/
-
-
-
            this.setState({nodes:nodes,treedata:treedata});
         }
     }
     saveNodeUserPriv(){
-
+        let flowid = this.props["flow"].id;
+        let nodes = this.treeobj.getCheckedNodes(true);
+        let loginNames = new Array();
+        for(var i=0;i<nodes.length;i++){
+            if(nodes[i].value!='invalid'){
+                loginNames.push(nodes[i].value);
+            }
+        }
+        let nodeType= '';
+        if($('#radio_node_user_priv_sin_'+flowid).is(':checked')){
+            nodeType = 'single';
+        }
+        if($('#radio_node_user_priv_mul_'+flowid).is(':checked')){
+            nodeType = 'multi';
+        }
+        let oridata = {
+            flowId:flowid,
+            nodeId:$('#select_user_priv_node_'+flowid).val(),
+            nodeType:nodeType,
+            loginNames:loginNames
+        };
+        ajaxreq(adminPath+'/usernodepriv',{type:'post',async:false,contentType:ajax_content_type,data:JSON.stringify(oridata),
+            dataType:'text',success:(data)=>{
+                if(data!='success'){
+                    alert(data);
+                }else{
+                    alert('保存成功！');
+                }
+            }});
     }
     render(){
         let flowid=this.props["flow"].id;
@@ -115,7 +135,7 @@ class NodeUserPriv extends React.Component{
                                     <form id={"form_nodeuserpriv_"+this.props["flow"].id}>
                                         <div className="form-group">
                                             <div className="col-lg-5 text-center">
-                                                <select className={"form-control"}>
+                                                <select className={"form-control"} id={"select_user_priv_node_"+this.props["flow"].id}>
                                                     {nodeselectarr}
                                                 </select>
                                                 <br/><br/>

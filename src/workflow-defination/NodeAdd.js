@@ -83,8 +83,7 @@ class NodeAdd extends React.Component{
                                                 <textarea className={"form-control"} rows={"2"} name={"description"} style={{resize:'none'}}></textarea>
                                             </div>
                                         </div>
-                                        assign_user
-                                        <div className="form-group">
+                                        <div className  ="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label">固定分配用户</label>
                                             </div>

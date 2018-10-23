@@ -22,7 +22,7 @@ class Node extends React.Component{
     }
     render(){
         let flowid = this.props["flow"].id;
-        let flowName = this.props["flow"].name;
+        let flowName = this.props["flow"].flowName;
         let nodelinearr = new Array();
         let nodelinecontent = null;
         for(let [index,node] of this.state.nodes.entries()){
