@@ -7,10 +7,14 @@
     <link rel="stylesheet" type="text/css" href="./mloading/jquery.mloading.css">
     <link rel="stylesheet" type="text/css" href="./bootstrap-treeview/bootstrap-treeview.css">
     <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-ztree/css/metroStyle/metroStyle.css">
     <script type="text/javascript" src="./jquery/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="./bootstrap3/js/bootstrap.js"></script>
     <script type="text/javascript" src="./mloading/jquery.mloading.js"></script>
     <script type="text/javascript" src="./bootstrap-treeview/bootstrap-treeview.js"></script>
+    <script type="text/javascript" src="./jquery-ztree/js/jquery.ztree.all-3.5.js"></script>
+    <script type="text/javascript" src="./jquery-ztree/js/jquery.ztree.exhide-3.5.js"></script>
+    <script type="text/javascript" src="./jquery-ztree/userztree.js"></script>
 
     <script type="text/javascript">
         var alert_tag = true;
@@ -20,16 +24,18 @@
                 $(event.target).find('a').click();
             });
             $('#linecanvas').hide();
-            /*$('body').mLoading({
+            $('body').mLoading({
                 mask:false,
                 text:' ☎ 提交ing... ☏'
-            });*/
+            });
+            $('body').mLoading("hidden");
 
             //buss method ...
             $('button:contains("页面编辑器")').click(function(e){
                 alert(window.currentflowid);
             });
         });
+
     </script>
 </head>
 <body>
@@ -52,7 +58,6 @@
 
 
     <script type="text/javascript" src="bundle.js"></script>
-
 
 </body>
 </html>
