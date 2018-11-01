@@ -9,6 +9,8 @@ class Node extends React.Component{
     constructor(){
         super();
         this.state = {nodes:[]};
+        this.formDesign = this.formDesign.bind(this);
+        this.velocity = this.velocity.bind(this);
     }
     componentDidMount(){
        this.refresh();
@@ -19,6 +21,20 @@ class Node extends React.Component{
         ajaxreq(adminPath+'/defination/flows/'+flowid+'/nodes',{success:(nodes)=>{
                 this.setState({nodes:nodes});
             }});
+    }
+    formDesign(){
+        let flowid = this.props["flow"].id;
+        window.open(adminPath+"/formDesign/get?id="+flowid);
+    }
+    velocity(){
+        let flowid = this.props["flow"].id;
+        ajaxreq(adminPath+'/velocity/velocity?id='+flowid,{type:'GET',dataType:'text',success:(data)=>{
+            if(data == 'success'){
+                alert('模板生成成功！');
+            }else{
+                alert('模板生成失败：'+data);
+            }
+        }});
     }
     render(){
         let flowid = this.props["flow"].id;
@@ -88,9 +104,9 @@ class Node extends React.Component{
                         <span className={"text-info"}>--- 所有节点 ---</span>
                         <NodeAdd node={this} flow={this.props["flow"]}/>
                         <NodeUserPriv flow={this.props["flow"]}/>
-                        <button className={"btn btn-primary pull-right marginright-normal "}><span className={"glyphicon glyphicon-list-alt"}></span>
+                        <button onClick={this.formDesign}  className={"btn btn-primary pull-right marginright-normal "}><span className={"glyphicon glyphicon-list-alt"}></span>
                             &nbsp;页面编辑器</button>
-                        <button className={"btn btn-warning pull-right marginright-normal"}><span className={"glyphicon glyphicon-leaf"}></span>
+                        <button onClick={this.velocity} className={"btn btn-warning pull-right marginright-normal"}><span className={"glyphicon glyphicon-leaf"}></span>
                             &nbsp;生成页面模板</button>
                     </caption>
                     <thead className={"bg-primary text-lg"}>

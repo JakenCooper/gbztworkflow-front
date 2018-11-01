@@ -133,6 +133,36 @@ class FlowAdd extends React.Component{
             columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
         }
 
+        // 业务表必须包含的字段：id title article_size proc_ins_id create_date
+        let idtag = false;
+        let titletag = false;
+        let articlesizetag = false;
+        let procinsidtag = false;
+        let createdate = false;
+
+        for(let[index,ele] of columnnamearr.entries()){
+            if(ele == 'id'){
+                idtag = true;
+            }
+            if(ele == 'title'){
+                titletag = true;
+            }
+            if(ele == 'article_size'){
+                articlesizetag = true;
+            }
+            if(ele == 'proc_ins_id'){
+                procinsidtag = true;
+            }
+            if(ele == 'create_date'){
+                createdate = true;
+            }
+        }
+        if(!idtag){alert('没有找到id字段，提交失败');return ;};
+        if(!titletag){alert('没有找到标题字段，提交失败');return ;};
+        if(!articlesizetag){alert('没有找到文号字段，提交失败');return ;};
+        if(!procinsidtag){alert('没有找到流程实例id字段，提交失败');return ;};
+        if(!createdate){alert('没有找到创建时间字段，提交失败');return ;};
+
         let oridata = {
             bussTableName:tablename,
             bussColumns:columnnamearr
@@ -263,6 +293,14 @@ class FlowAdd extends React.Component{
                                                     </div>
                                                     <div className="col-lg-10">
                                                         <input type={"text"} name="moduleRootPath" className={"form-control"}/>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <div className="col-lg-2 text-right">
+                                                        <label className="control-label">form_key</label>
+                                                    </div>
+                                                    <div className="col-lg-10">
+                                                        <input type={"text"} name="formKey" placeholder={"不确定就不要填写！"} className={"form-control"}/>
                                                     </div>
                                                 </div>
                                             </form>

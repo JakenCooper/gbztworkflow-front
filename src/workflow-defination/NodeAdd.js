@@ -88,7 +88,7 @@ class NodeAdd extends React.Component{
                                                 <label className="control-label">固定分配用户</label>
                                             </div>
                                             <div className="col-lg-10">
-                                                <input type={"text"} name={"assignUser"}  placeholder={"去查用户ID！"}/>
+                                                <input type={"text"} className="form-control" name={"assignUser"}  placeholder={"去查用户ID！"}/>
                                             </div>
                                         </div>
                                         <div className="form-group">
@@ -96,7 +96,7 @@ class NodeAdd extends React.Component{
                                                 <label className="control-label">排序号</label>
                                             </div>
                                             <div className="col-lg-10">
-                                                <input type={"number"} name={"sortNum"} min={"1"} max={"100"} placeholder={"1~100的整数"}/>
+                                                <input type={"number"} className="form-control" name={"sortNum"} min={"1"} max={"100"} placeholder={"1~100的整数"}/>
                                             </div>
                                         </div>
                                         <div className="form-group">
