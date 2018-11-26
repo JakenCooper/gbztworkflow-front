@@ -74,4 +74,6 @@ const CommonObj ={
     }
 };
 
+
+
 export {ajaxreq,ajax_content_type,serializeformajax,refreshWin,CommonObj};

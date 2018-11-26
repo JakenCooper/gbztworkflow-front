@@ -165,7 +165,7 @@ class Line extends React.Component{
                                    className={"marginleft-small"}>{node.name}
                                    {node.beginNode == true?'（起始节点）':''}
                                 {node.endNode == true?'（结束节点）':''}</label>
-                            <button className={"btn btn-mini btn-warning pull-right"} onClick={this.openLineEditorModal.bind(this,event,node.id,node.name,'fore','check')}>
+                            <button className={"btn btn-mini btn-warning pull-right"} onClick={(e)=>(this.openLineEditorModal.bind(this,e,node.id,node.name,'fore','check'))()}>
                                 <span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp; 编辑上一步属性
                             </button>
@@ -178,7 +178,7 @@ class Line extends React.Component{
                             <label for={"chk_forenode_"+node.id} className={"marginleft-small"}>{node.name}
                                 {node.beginNode == true?'（起始节点）':''}
                                 {node.endNode == true?'（结束节点）':''}</label>
-                            <button className={"btn btn-mini btn-info pull-right"} onClick={this.openLineEditorModal.bind(this,event,node.id,node.name,'fore','uncheck')}>
+                            <button className={"btn btn-mini btn-info pull-right"} onClick={(e)=>(this.openLineEditorModal.bind(this,e,node.id,node.name,'fore','uncheck'))()}>
                                 <span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp; 编辑上一步属性
                             </button>
@@ -193,7 +193,7 @@ class Line extends React.Component{
                                    className={"marginleft-small"}>{node.name}
                                 {node.beginNode == true?'（起始节点）':''}
                                 {node.endNode == true?'（结束节点）':''}</label>
-                            <button className={"btn btn-mini btn-warning pull-right"} onClick={this.openLineEditorModal.bind(this,event,node.id,node.name,'next','check')}>
+                            <button className={"btn btn-mini btn-warning pull-right"} onClick={(e)=>(this.openLineEditorModal.bind(this,e,node.id,node.name,'next','check'))()}>
                                 <span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp; 编辑下一步属性
                             </button>
@@ -207,7 +207,7 @@ class Line extends React.Component{
                                    className={"marginleft-small"}>{node.name}
                                 {node.beginNode == true?'（起始节点）':''}
                                 {node.endNode == true?'（结束节点）':''}</label>
-                            <button className={"btn btn-mini btn-info pull-right"} onClick={this.openLineEditorModal.bind(this,event,node.id,node.name,'next','uncheck')}>
+                            <button className={"btn btn-mini btn-info pull-right"} onClick={(e)=>(this.openLineEditorModal.bind(this,e,node.id,node.name,'next','uncheck'))()}>
                                 <span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp; 编辑下一步属性
                             </button>

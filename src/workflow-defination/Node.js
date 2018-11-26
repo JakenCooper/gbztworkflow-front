@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import {ajaxreq,ajax_content_type,serializeformajax,refreshWin} from '../common';
 import NodeAdd from './NodeAdd';
+import NodeUpdate from './NodeUpdate';
 import Line from './Line';
 import NodeUserPriv from './NodeUserPriv';
 
@@ -51,6 +52,7 @@ class Node extends React.Component{
                         <td className={"vertial-center"}>
                             {/*<button className={"btn btn-warning btn-sm"}><span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp;&nbsp;修改数据权限</button>&nbsp;&nbsp;&nbsp;&nbsp;*/}
+                            <NodeUpdate node={node} outernodeobj={this}/>
                             <Line node={node}/>
                             <button className={"btn btn-danger btn-sm"}><span className={"glyphicon glyphicon-trash"}></span>
                                 &nbsp;&nbsp;删  除</button>
@@ -66,6 +68,7 @@ class Node extends React.Component{
                         <td className={"vertial-center"}>
                             {/*<button className={"btn btn-warning btn-sm"}><span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp;&nbsp;修改数据权限</button>&nbsp;&nbsp;&nbsp;&nbsp;*/}
+                            <NodeUpdate node={node} outernodeobj={this}/>
                             <Line node={node}/>
                             <button className={"btn btn-danger btn-sm"}><span className={"glyphicon glyphicon-trash"}></span>
                                 &nbsp;&nbsp;删  除</button>
@@ -81,6 +84,7 @@ class Node extends React.Component{
                         <td className={"vertial-center"}>
                             {/*<button className={"btn btn-warning btn-sm"}><span className={"glyphicon glyphicon-pencil"}></span>
                                 &nbsp;&nbsp;修改数据权限</button>&nbsp;&nbsp;&nbsp;&nbsp;*/}
+                            <NodeUpdate node={node} outernodeobj={this}/>
                             <Line node={node}/>
                             <button className={"btn btn-danger btn-sm"}><span className={"glyphicon glyphicon-trash"}></span>
                                 &nbsp;&nbsp;删  除</button>
@@ -112,9 +116,9 @@ class Node extends React.Component{
                     <thead className={"bg-primary text-lg"}>
                         <tr>
                             <td style={{width:'16%'}}><strong>节点id</strong></td>
-                            <td style={{width:'30%'}}><strong>节点名称</strong></td>
-                            <td style={{width:'30%'}}><strong>节点描述</strong></td>
-                            <td style={{width:'25%'}}><strong>操  作</strong></td>
+                            <td style={{width:'25%'}}><strong>节点名称</strong></td>
+                            <td style={{width:'25%'}}><strong>节点描述</strong></td>
+                            <td style={{width:'30%'}}><strong>操  作</strong></td>
                         </tr>
                     </thead>
                     <tbody>
