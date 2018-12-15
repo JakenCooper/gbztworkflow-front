@@ -18,7 +18,10 @@
 
     <script type="text/javascript">
         var alert_tag = true;
-        var adminPath = 'http://localhost:8666/gw';
+        //var adminPath = 'http://localhost:8083/gbztworkflow';
+        var adminPath = 'http://192.168.1.4:8666/gw';
+        // var adminPath = 'http://192.168.1.17:8666/gw';
+        // var adminPath = 'http://10.6.97.10:8666/gw';
         $(function(){
             $('#index_menugroup .panel-title').click(function(event){
                 $(event.target).find('a').click();
@@ -30,7 +33,6 @@
                 text:' ☎ 提交ing... ☏'
             });
             $('body').mLoading("hidden");*/
-
         });
 
     </script>
@@ -42,6 +44,8 @@
             <div class="navbar-header">
                 <h2 class="navbar-text">国博政通工作流引擎 </h2>
             </div>
+            <div id="NavigationBar">
+            </div>
             <div class="pull-right navbar-text">
                 &nbsp;&nbsp;<strong> [ 囍 ]  ╮(￣▽￣| ")╭  [ 囍 ]</strong>
             </div>
@@ -52,9 +56,11 @@
 
 
     <div id="section_flowadd"></div>
-
+    <div id="section_bussadd"></div>
 
     <script type="text/javascript" src="bundle.js"></script>
+
+    
 
 </body>
 </html>

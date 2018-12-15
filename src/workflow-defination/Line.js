@@ -57,6 +57,22 @@ class Line extends React.Component{
                         }else{
                             $('#chk_lineadd_withdraw_'+outernode.id).removeAttr('checked');
                         }
+                        //     defaultChecked={"true"}
+                        if(foreline.taskType == 'usertask'){
+                            $('#user_task_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (foreline.taskType == 'systask') {
+                            $('#sys_task_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }
+                        if(foreline.finishType == 'multi'){
+                            $('#multi_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (foreline.finishType == 'single') {
+                            $('#single_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }
+                        if(foreline.execType == 'concurrent'){
+                            $('#concurrent_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (foreline.execType == 'block') {
+                            $('#block_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }
                         if(foreline.canRetreat){
                             $('#chk_lineadd_retreat_'+outernode.id).removeAttr('checked').attr('checked','');
                         }else{
@@ -80,6 +96,21 @@ class Line extends React.Component{
                             $('#chk_lineadd_withdraw_'+outernode.id).removeAttr('checked').attr('checked','');
                         }else{
                             $('#chk_lineadd_withdraw_'+outernode.id).removeAttr('checked');
+                        }
+                        if(nextline.taskType == 'usertask'){
+                            $('#user_task_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (nextline.taskType == 'systask') {
+                            $('#sys_task_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }
+                        if(nextline.finishType == 'multi'){
+                            $('#multi_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (nextline.finishType == 'single') {
+                            $('#single_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }
+                        if(nextline.execType == 'concurrent'){
+                            $('#concurrent_'+outernode.id).removeAttr('checked').attr('checked','');
+                        }else if (nextline.execType == 'block') {
+                            $('#block_'+outernode.id).removeAttr('checked').attr('checked','');
                         }
                         if(nextline.canRetreat){
                             $('#chk_lineadd_retreat_'+outernode.id).removeAttr('checked').attr('checked','');
@@ -106,6 +137,9 @@ class Line extends React.Component{
             }
         });
         $('#mode_lineadd_'+outernode.id).modal("show");
+        $('#mode_lineadd_'+outernode.id).on('hidden.bs.modal',function(){
+            $("#form_lineadd_"+outernode.id)[0].reset();
+        });
     }
     saveLine(){
         let outernode = this.props['node'];
@@ -328,12 +362,12 @@ class Line extends React.Component{
                                             <div className="col-lg-10 clearfix">
                                                 <div className={"radio pull-left"}>
                                                     <label>
-                                                        <input  type="radio" name="taskType"  value="usertask"/> 用户任务
+                                                        <input  type="radio" name="taskType" id={"user_task_"+outernode.id}  value="usertask"/> 用户任务
                                                     </label>
                                                 </div>
                                                 <div className={"radio pull-left marginleft-normal"}>
                                                     <label>
-                                                        <input  type="radio" name="taskType" value="systask"/> 系统任务
+                                                        <input  type="radio" id={"sys_task_"+outernode.id} name="taskType" value="systask"/> 系统任务
                                                     </label>
                                                 </div>
                                                 <div className={"clearfix"}>
@@ -354,12 +388,12 @@ class Line extends React.Component{
                                             <div className="col-lg-10 clearfix">
                                                 <div className={"radio pull-left"}>
                                                     <label>
-                                                        <input  type="radio" name="finishType"   value="single" /> 单实例
+                                                        <input  type="radio" id={"single_"+outernode.id} name="finishType"   value="single" /> 单实例
                                                     </label>
                                                 </div>
                                                 <div className={"radio pull-left marginleft-normal"}>
                                                     <label>
-                                                        <input  type="radio" name="finishType" value="multi"/> 多实例
+                                                        <input  type="radio" id={"multi_"+outernode.id} name="finishType" value="multi"/> 多实例
                                                     </label>
                                                 </div>
                                             </div>
@@ -371,12 +405,12 @@ class Line extends React.Component{
                                             <div className="col-lg-10 clearfix">
                                                 <div className={"radio pull-left"}>
                                                     <label>
-                                                        <input  type="radio" name="execType"  value="block" /> 串行
+                                                        <input  type="radio" id={"block_"+outernode.id} name="execType"  value="block" /> 串行
                                                     </label>
                                                 </div>
                                                 <div className={"radio pull-left marginleft-normal"}>
                                                     <label>
-                                                        <input  type="radio" name="execType" value="concurrent" /> 并行
+                                                        <input  type="radio" id={"concurrent_"+outernode.id} name="execType" value="concurrent" /> 并行
                                                     </label>
                                                 </div>
                                             </div>
@@ -385,7 +419,7 @@ class Line extends React.Component{
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
                                                     <label>
-                                                        <input type="checkbox" name={"canWithdraw"} id={"chk_lineadd_withdraw_"+outernode.id} checked value={"true"}/> 可收回
+                                                        <input type="checkbox" name={"canWithdraw"} id={"chk_lineadd_withdraw_"+outernode.id} value={"true"}/> 可收回
                                                     </label>
                                                 </div>
                                                 <div className="checkbox pull-left" style={{marginLeft:'20px'}}>

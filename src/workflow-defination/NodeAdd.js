@@ -16,6 +16,9 @@ class NodeAdd extends React.Component{
                 $('#form_nodeadd_'+flowid).find('textarea').val('');
             });
             $('#modal_nodeadd_'+flowid).modal('show');
+            $('#modal_nodeadd_'+flowid).on('hidden.bs.modal',function(){
+                $("#form_nodeadd_"+flowid)[0].reset();
+            });
         });
     }
     saveNode(){
@@ -42,7 +45,7 @@ class NodeAdd extends React.Component{
     render(){
         return(
             <div>
-                <button className={"btn btn-info pull-right"} id={"button_nodeadd_"+this.props['flow'].id}><span className="glyphicon glyphicon-plus"></span>
+                <button className={"btn btn-info pull-left"} style={{display:"none"}} id={"button_nodeadd_"+this.props['flow'].id}><span className="glyphicon glyphicon-plus"></span>
                     &nbsp; 添 加 节 点</button>
                 <div className="modal fade" id={"modal_nodeadd_"+this.props['flow'].id} tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
                      aria-hidden="true">
@@ -61,7 +64,7 @@ class NodeAdd extends React.Component{
                                     <div className="form form-horizontal row container-fluid">
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">* 节点id</label>
+                                                <label className="control-label"><font color="red">*</font> 节点id</label>
                                             </div>
                                             <div className="col-lg-10">
                                                 <input type={"text"} name="nodeDefId" className={"form-control"} placeholder={"audit-xx"}/>
@@ -69,7 +72,7 @@ class NodeAdd extends React.Component{
                                         </div>
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">* 节点名称</label>
+                                                <label className="control-label"><font color="red">*</font> 节点名称</label>
                                             </div>
                                             <div className="col-lg-10">
                                                 <input type={"text"} name="name" className={"form-control"}/>

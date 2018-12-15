@@ -5,8 +5,9 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax,CommonObj} from '
 class FlowAdd extends React.Component{
     constructor(){
         super();
-        this.state={flows:[]};
+        this.state={flows:[],rootNodeText:''};
         this.saveFlow = this.saveFlow.bind(this);
+        this.inputChange = this.inputChange.bind(this);
     }
     componentDidMount(){
         $('#button_flowadd').click(function(){
@@ -16,6 +17,9 @@ class FlowAdd extends React.Component{
                 $('#hidden_flowadd_connection_busstblname').val('');
             });
             $('#modal_flowadd').modal('show');
+            $('#modal_flowadd').on('hidden.bs.modal',function(){
+                $("#form_flowadd_connection")[0].reset();
+            });
         });
 
         ajaxreq(adminPath+'/metadata/defaults',{async:false, success:(data)=>{
@@ -24,6 +28,7 @@ class FlowAdd extends React.Component{
             $('#div_flowadd_connection [name="bussDbName"]').val(data.bussDbName);
             $('#div_flowadd_connection [name="bussDbUserName"]').val(data.bussDbUserName);
             $('#div_flowadd_connection [name="bussDbUserPwd"]').val(data.bussDbUserPwd);
+            $('#div_flowadd_connection [name="moduleRootPath"]').val(data.moduleRootPath);
             if(data.bussDbType == 'mysql'){
                 $('#div_flowadd_connection select').val('mysql');
             }else if (data.bussDbType == 'oscar'){
@@ -32,6 +37,55 @@ class FlowAdd extends React.Component{
         }});
 
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
+            if ($('#form_flowadd_connection #flowName').val() == null || $('#form_flowadd_connection #flowName').val() == ''){
+                alert('并没有填写流程名称！');
+                return false;
+            }
+            var bussDbHost = $('#form_flowadd_connection [name="bussDbHost"]').val();
+            if (bussDbHost == null || bussDbHost == ''){
+                alert('并没有填写数据库主机！');
+                return false;}
+            // } else if (bussDbHost.match(exp)){
+            //     alert('Ip地址不合法哦~');
+            //     return false;
+            // } 
+            if ($('#form_flowadd_connection [name="bussDbPort"]').val() == null || $('#form_flowadd_connection [name="bussDbPort"]').val() == ''){
+                alert('并没有填写端口号！');
+                return false;
+            } 
+            if ($('#form_flowadd_connection [name="bussDbUserName"]').val() == null || $('#form_flowadd_connection [name="bussDbUserName"]').val() == ''){
+                alert('并没有填写用户！');
+                return false;
+            } 
+            if ($('#form_flowadd_connection [name="bussDbName"]').val() == null || $('#form_flowadd_connection [name="bussDbName"]').val() == ''){
+                alert('并没有填写数据库名称！');
+                return false;
+            } 
+            if ($('#form_flowadd_connection [name="bussDbUserPwd"]').val() == null || $('#form_flowadd_connection [name="bussDbUserPwd"]').val() == ''){
+                alert('并没有填写密码！');
+                return false;
+            }
+            if ($('#form_flowadd_connection [name="moduleName"]').val() == null || $('#form_flowadd_connection [name="moduleName"]').val() == ''){
+                alert('并没有填写模块英文名！');
+                return false;
+            }
+            if ($('#form_flowadd_connection [name="moduleNameCn"]').val() == null || $('#form_flowadd_connection [name="moduleNameCn"]').val() == ''){
+                alert('并没有填写模块中文名！');
+                return false;
+            }
+            var moduleRootPath = $('#form_flowadd_connection [name="moduleRootPath"]').val();
+            if (moduleRootPath == null || moduleRootPath == ''){
+                alert('并没有填写模块路径！');
+                return false;
+            }
+            // 判断模块路径是否以'/'结尾,若不是则自动添加
+            if (moduleRootPath.charAt(moduleRootPath.length-1) != "/"){
+                if (moduleRootPath.charAt(moduleRootPath.length-1) != "\\"){
+                    if (moduleRootPath != null || moduleRootPath != ''){
+                        $('#form_flowadd_connection [name="moduleRootPath"]').val($('#form_flowadd_connection [name="moduleRootPath"]').val()+'/');
+                    }
+                } 
+            }
             let reqdata = serializeformajax($('#form_flowadd_connection'));
             $('#input_flowadd_tableselection_search').val('');
             ajaxreq(adminPath+'/metadata/tables',{
@@ -49,7 +103,19 @@ class FlowAdd extends React.Component{
                     }
                     let treesection = $('#div_flowadd_tableselection > div');
                     treesection.treeview(CommonObj.genTreeView(true,treedata));
-
+                    let columns = treesection.treeview('getEnabled');
+                    for (let i = 0; i < columns.length; i++) {
+                        if (i<1){
+                            let text = columns[i].text.replace(/\&nbsp\;/g,'');
+                            this.setState({
+                                rootNodeText:text
+                            })
+                            return
+                        } 
+                    }
+                    // treesection.treeview('disableNode', [ 0, { silent: true } ]);
+                    // $('#tree').treeview('revealNode', [ 0, { silent: true } ]);
+                    // treesection.treeview('expandAll', { levels: 2, silent: true });
                     //alert(result.length);
                     /*if($('#hidden_flowadd_connection_busstblid').val() != ''){
                         treesection.treeview('selectNode',[$('#hidden_flowadd_connection_busstblid').val(),{silent:true}]);
@@ -82,14 +148,20 @@ class FlowAdd extends React.Component{
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(2)').on('show.bs.tab',(e)=>{
             //alert($('#tab_flowadd').find('[data-toggle="tab"]:eq(2)').length);
             let treesection = $('#div_flowadd_tableselection > div');
-            let tableselections = treesection.treeview('getSelected', 0);
+            let tableselections = treesection.treeview('getSelected');
             if(tableselections.length == 0){
                 alert('先选择业务表！');
                 return false;
             }
-
+            for (let i = 0; i < tableselections.length; i++) {
+                let text = tableselections[i].text.replace(/\&nbsp\;/g,'');
+                if (text == this.state.rootNodeText){
+                    alert('不能选择根节点!!!');
+                    return false;
+                }
+            }
             let selectedTableName = tableselections[0].text.replace(/\&nbsp\;/g,'');
-            $('#hidden_flowadd_connection_busstblid').val( tableselections[0].nodeid);
+            $('#hidden_flowadd_connection_busstblid').val( tableselections[0].nodeId);
             $('#hidden_flowadd_connection_busstblname').val(selectedTableName);
             let reqdata = serializeformajax($('#form_flowadd_connection'));
 
@@ -103,6 +175,16 @@ class FlowAdd extends React.Component{
                     let treedata = JSON.parse(data);
                     let columnsection = $('#div_flowadd_columnselection > div');
                     columnsection.treeview(CommonObj.genTreeView(false,treedata));
+                    let columns = columnsection.treeview('getEnabled');
+                    for (let i = 0; i < columns.length; i++) {
+                        if (i<1){
+                            let text = columns[i].text.replace(/\&nbsp\;/g,'');
+                            this.setState({
+                                rootNodeText:text
+                            })
+                            return
+                        }
+                    }
                     //treesection.treeview('selectNode',[3,{silent:true}]);
                 }
             });
@@ -115,6 +197,13 @@ class FlowAdd extends React.Component{
         let tablename = $('#hidden_flowadd_connection_busstblname').val();
         let columnsection = $('#div_flowadd_columnselection > div');
         let columns = columnsection.treeview('getSelected', 0);
+        for (let i = 0; i < columns.length; i++) {
+            let text = columns[i].text.replace(/\&nbsp\;/g,'');
+            if (text == this.state.rootNodeText){
+                alert('不能选择根节点!!!');
+                return false;
+            }
+        }
         if(tablename == ''){
             alert('并没有选择业务表！');
             return ;
@@ -180,6 +269,28 @@ class FlowAdd extends React.Component{
             }
         });
     }
+    allCheckBoxChange(e){ // 全选
+        let columnsection = $('#div_flowadd_columnselection > div');
+        let columns = columnsection.treeview('getEnabled');
+        if (e.target.checked) {
+            for (let i = 1; i < columns.length; i++) {
+                columnsection.treeview('selectNode', [i, {silent: true}]);
+            }
+        }else { // 反选(暂时无法反选..)
+            let columnssss = columnsection.treeview('getSelected');
+            for (let i = 1; i < columnssss.length; i++) {
+                console.log(columnssss[i].nodeId);
+                columnsection.treeview('toggleNodeChecked', [ columnssss[i].nodeId, { silent: true } ]);
+            }
+            columnsection.treeview('uncheckAll', { silent: true });
+        }
+    }
+    inputChange(e){
+        let attrname = $(e.target).attr('name');
+        this.setState({
+            flows:{attrname:e.target.value}
+        });
+    }
     render(){
         return(
             <div className="modal fade" id="modal_flowadd" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -214,15 +325,15 @@ class FlowAdd extends React.Component{
                                                 <input type={"hidden"}  id={"hidden_flowadd_connection_busstblid"}/>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 流程名称</label>
+                                                        <label className="control-label"><font color="red">*</font> 流程名称</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="flowName" className={"form-control"} />
+                                                        <input type={"text"} id={"flowName"} value={this.state.flows.flowName} onChange={this.inputChange} name="flowName" className={"form-control"} />
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 数据库类型</label>
+                                                        <label className="control-label"><font color="red">*</font> 数据库类型</label>
                                                     </div>
                                                     <div className="col-lg-10">
                                                         <select name="bussDbType" className={"form-control"}>
@@ -233,66 +344,66 @@ class FlowAdd extends React.Component{
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 数据库主机</label>
+                                                        <label className="control-label"><font color="red">*</font> 数据库主机</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type="text" name="bussDbHost" className={"form-control"}  />
+                                                        <input type="text" value={this.state.flows.bussDbHost} onChange={this.inputChange} name="bussDbHost" className={"form-control"}  />
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 数据库端口</label>
+                                                        <label className="control-label"><font color="red">*</font> 数据库端口</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="bussDbPort" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.bussDbPort} onChange={this.inputChange} name="bussDbPort" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 数据库名称</label>
+                                                        <label className="control-label"><font color="red">*</font> 数据库名称</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="bussDbName" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.bussDbName} onChange={this.inputChange} name="bussDbName" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 用   户</label>
+                                                        <label className="control-label"><font color="red">*</font> 用   户</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="bussDbUserName" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.bussDbUserName} onChange={this.inputChange} name="bussDbUserName" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 密   码</label>
+                                                        <label className="control-label"><font color="red">*</font> 密   码</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"password"} name="bussDbUserPwd" className={"form-control"}/>
+                                                        <input type={"password"} value={this.state.flows.bussDbUserPwd} onChange={this.inputChange} name="bussDbUserPwd" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 模块名称（英）</label>
+                                                        <label className="control-label"><font color="red">*</font> 模块名称（英）</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="moduleName" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.moduleName} onChange={this.inputChange} name="moduleName" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 模块名称（中）</label>
+                                                        <label className="control-label"><font color="red">*</font> 模块名称（中）</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="moduleNameCn" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.moduleNameCn} onChange={this.inputChange} name="moduleNameCn" className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="col-lg-2 text-right">
-                                                        <label className="control-label">* 模块路径</label>
+                                                        <label className="control-label"><font color="red">*</font> 模块路径</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="moduleRootPath" className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.moduleRootPath} onChange={this.inputChange} name="moduleRootPath" placeholder={"填写文件生成路径"} className={"form-control"}/>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
@@ -300,7 +411,7 @@ class FlowAdd extends React.Component{
                                                         <label className="control-label">form_key</label>
                                                     </div>
                                                     <div className="col-lg-10">
-                                                        <input type={"text"} name="formKey" placeholder={"不确定就不要填写！"} className={"form-control"}/>
+                                                        <input type={"text"} value={this.state.flows.formKey} name="formKey" onChange={this.inputChange} placeholder={"不确定就不要填写！"} className={"form-control"}/>
                                                     </div>
                                                 </div>
                                             </form>
@@ -312,6 +423,7 @@ class FlowAdd extends React.Component{
                                             <div className={"overflowy"}></div>
                                         </div>
                                         <div className="tab-pane fade" id="div_flowadd_columnselection">
+                                            全选 : <input onChange={this.allCheckBoxChange.bind(this)} name={"asdasd"} type="checkBox" /><br/>
                                             <div className={"overflowy"}></div>
                                         </div>
                                     </div>

@@ -13,13 +13,21 @@ class NodeUpdate extends React.Component{
             $('#modal_nodeupdate_'+nodeid).on('show.bs.modal',function(){
             });
             $('#modal_nodeupdate_'+nodeid).modal('show');
+            $('#modal_nodeupdate_'+nodeid).on('hidden.bs.modal',function(){
+                $("#form_nodeupdate_"+nodeid)[0].reset();
+            });
         });
     }
     updateNode(){
         let nodeid = this.props['node'].id;
         let nodeDefId = $('#form_nodeupdate_'+nodeid).find('[name="nodeDefId"]').val();
-        if(nodeDefId == '' || nodeDefId.split('-').length == 0 || nodeDefId.indexOf("audit-")!=0){
+        let nodeName = $('#form_nodeupdate_'+nodeid).find('[name="name"]').val();
+        if(nodeDefId == '' || nodeDefId.split('-').length == 0 || nodeDefId.indexOf("audit-")!=0 || nodeDefId == null){
             alert('节点id格式错误');
+            return ;
+        }
+        if(nodeName == '' || nodeName == null){
+            alert('节点名称格式错误');
             return ;
         }
         let data = serializeformajax($('#form_nodeupdate_'+nodeid));
@@ -59,7 +67,7 @@ class NodeUpdate extends React.Component{
                                     <div className="form form-horizontal row container-fluid">
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">* 节点id</label>
+                                                <label className="control-label"><font color="red">*</font> 节点id</label>
                                             </div>
                                             <div className="col-lg-10">
                                                 <input type={"text"} name="nodeDefId" className={"form-control"} placeholder={"audit-xx"} defaultValue={currentNode.nodeDefId}/>
@@ -67,7 +75,7 @@ class NodeUpdate extends React.Component{
                                         </div>
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">* 节点名称</label>
+                                                <label className="control-label"><font color="red">*</font> 节点名称</label>
                                             </div>
                                             <div className="col-lg-10">
                                                 <input type={"text"} name="name" className={"form-control"} defaultValue={currentNode.name}/>

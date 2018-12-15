@@ -3,10 +3,81 @@ import ReactDom from 'react-dom';
 import {ajaxreq,ajax_content_type,serializeformajax,refreshWin} from '../common';
 
 class NodeUserPriv extends React.Component{
+    changeEvent(e){
+        console.log(e.target.value);
+        let flowid = this.props["flow"].id;
+        let nodeId =e.target.value;
+      
+        //请求后台根据nodeid 查找loginnames;
+        //和oncahnge事件 请求同一个后台地址 获取节点对应的loginnames 渲染到tree上
+        ajaxreq(adminPath+'/usernodepriv/tree/'+flowid+'/'+nodeId,{type:'GET',success:(data)=>{
+                let userloginname = data.loginName;
+                let nodetype =data.nodeType;
+                var tag=',';
+                let userprivdata = [];
+                let nodes1 = this.treeobj.getNodes();
+                var nodess =  this.treeobj.transformToArray(nodes1);
+                this.treeobj.checkAllNodes(false);
+                //默认多选
+                var v=$(":radio[name='nodeUserPrivType']:checked").val();
+                if(userloginname.indexOf("noone")==-1) {
+                    if(nodetype.indexOf("multi")!=-1) {
+                        //多人情况
+                        $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
+                        $('#radio_node_user_priv_mul_' + flowid).attr("checked", "true");
+                        if (userloginname.indexOf(tag) != -1) {
+                            //   $('#radio_node_user_priv_sin_' + flowid).attr("checked", "false");
+                            let users = userloginname.split(",");
+                            for (let s = 0; s < users.length; s++) {
+                                userprivdata.push(users[s]);
+                            }
+                        } else {
+                            userprivdata.push(userloginname);
+                        }
+                        for(let j=0;j<nodess.length;j++){
+                            // alert(nodess.length);
+                            for(let z=0;z<userprivdata.length;z++){
+                                if(userprivdata[z] == nodess[j].value){
+                                    this.treeobj.checkNode(nodess[j],true,true);
+                                    break;
+                                }
+                            }
+                        }
+                    }else if(nodetype.indexOf("single")!=-1){
+                        //单选框
+                        $('#radio_node_user_priv_mul_' + flowid).attr("checked", false);
+                        $('#radio_node_user_priv_sin_' + flowid).attr("checked", "true");
+                        userprivdata.push(userloginname);
+                        for(let j=0;j<nodess.length;j++){
+                            // alert(nodess.length);
+                            for(let z=0;z<userprivdata.length;z++){
+                                if(userprivdata[z] == nodess[j].value){
+                                    this.treeobj.checkNode(nodess[j],true,true);
+                                    break;
+                                }
+                            }
+                        }
+                    }else{
+                        $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
+                        $('#radio_node_user_priv_mul_'+flowid).attr("checked",false);
+                    }
+
+                }else{
+                    $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
+                    $('#radio_node_user_priv_mul_'+flowid).attr("checked",false);
+                }
+
+
+            }});
+
+    }
     constructor(){
         super();
         this.state={nodes:[],treedata:[]};
         this.saveNodeUserPriv = this.saveNodeUserPriv.bind(this);
+        this.treerealdata = this.treerealdata.bind(this);
+       
+        
     }
     componentDidMount(){
         let flowid=this.props["flow"].id;
@@ -55,7 +126,8 @@ class NodeUserPriv extends React.Component{
                    }
                }
            };
-
+           
+           //ztree 初始化
             var t = $("#user_tree_"+flowid);
             t = $.fn.zTree.init(t, localsetting, treedata);
 
@@ -70,6 +142,70 @@ class NodeUserPriv extends React.Component{
            this.setState({nodes:nodes,treedata:treedata});
         }
     }
+
+
+  
+ 
+    //add by ym
+    treerealdata(){
+        let flowid = this.props["flow"].id;
+        let nodeId =$('#select_user_priv_node_'+flowid).val();
+       //请求后台根据nodeid 查找loginnames;
+        //和oncahnge事件 请求同一个后台地址 获取节点对应的loginnames 渲染到tree上
+        ajaxreq(adminPath+'/usernodepriv/tree/'+flowid+'/'+nodeId,{type:'GET',success:(data)=>{
+            let userloginname = data.loginName;
+            var tag=',';
+            let userprivdata = [];
+            let nodetype =data.nodeType;
+            let nodes1 = this.treeobj.getNodes();
+            var nodess =  this.treeobj.transformToArray(nodes1);
+            if(userloginname.indexOf("noone")==-1) {
+                if(nodetype.indexOf("multi")!=-1) {
+                    //多人情况
+                    $('#radio_node_user_priv_mul_' + flowid).attr("checked", "true");
+                    if (userloginname.indexOf(tag) != -1) {
+                        let users = userloginname.split(",");
+                        for (let s = 0; s < users.length; s++) {
+                            userprivdata.push(users[s]);
+                        }
+                    } else {
+                        //多选下的一人情况
+                        userprivdata.push(userloginname);
+                    }
+                    for(let j=0;j<nodess.length;j++){
+                        for(let z=0;z<userprivdata.length;z++){
+                            if(userprivdata[z] == nodess[j].value){
+                                this.treeobj.checkNode(nodess[j],true,true);
+                                break;
+                            }
+                        }
+                    }
+                }else if(nodetype.indexOf("single")!=-1){
+                    //单选框
+                    $('#radio_node_user_priv_sin_' + flowid).attr("checked", "true");
+                    userprivdata.push(userloginname);
+                    for(let j=0;j<nodess.length;j++){
+                        for(let z=0;z<userprivdata.length;z++){
+                            if(userprivdata[z] == nodess[j].value){
+                                this.treeobj.checkNode(nodess[j],true,true);
+                                break;
+                            }
+                        }
+                    }
+                }else{
+                    $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
+                    $('#radio_node_user_priv_mul_' + flowid).attr("checked", false);
+                }
+               
+            }else{
+                $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
+                $('#radio_node_user_priv_mul_'+flowid).attr("checked",false);
+            }
+  
+                 
+            }});
+    }
+   
     saveNodeUserPriv(){
         let flowid = this.props["flow"].id;
         let nodes = this.treeobj.getCheckedNodes(true);
@@ -79,6 +215,21 @@ class NodeUserPriv extends React.Component{
                 loginNames.push(nodes[i].value);
             }
         }
+
+        let userprivdata = [];
+        let nodes1 = this.treeobj.getNodes();
+        if(typeof nodes1 != 'undefined'){
+            for(let j=0;j<nodes1.length;j++){
+                for(let z=0;z<userprivdata.length;z++){
+                    if(userprivdata[z].value == nodes1[j].value){
+                        ztree.checkNode(node1[j],true,true);
+                        break;
+                    }
+                }
+            }
+        }
+
+
         let nodeType= '';
         if($('#radio_node_user_priv_sin_'+flowid).is(':checked')){
             nodeType = 'single';
@@ -92,6 +243,11 @@ class NodeUserPriv extends React.Component{
             nodeType:nodeType,
             loginNames:loginNames
         };
+        $('body').mLoading({
+            text: "加载中",//加载文字，默认值：加载中...
+            html: false,//设置加载内容是否是html格式，默认值是false
+            mask: true//是否显示遮罩效果，默认显示
+        });
         ajaxreq(adminPath+'/usernodepriv',{type:'post',async:false,contentType:ajax_content_type,data:JSON.stringify(oridata),
             dataType:'text',success:(data)=>{
                 if(data!='success'){
@@ -116,7 +272,7 @@ class NodeUserPriv extends React.Component{
         }
         return(
             <div>
-                <button id={"btn_model_"+flowid} className={"btn btn-primary pull-right marginright-normal "}><span className={"glyphicon glyphicon-pencil"}></span>
+                <button onClick={this.treerealdata} id={"btn_model_"+flowid}  style={{display:"none"}}  className={"btn btn-primary pull-right marginright-normal "}><span className={"glyphicon glyphicon-pencil"}></span>
                     &nbsp;修改数据权限</button>
                 <div className="modal fade" id={"modal_userpriv_"+flowid} tabIndex="-1" role="dialog" aria-labelledby="myModalLabel"
                      aria-hidden="true">
@@ -135,7 +291,7 @@ class NodeUserPriv extends React.Component{
                                     <form id={"form_nodeuserpriv_"+this.props["flow"].id}>
                                         <div className="form-group">
                                             <div className="col-lg-5 text-center">
-                                                <select className={"form-control"} id={"select_user_priv_node_"+this.props["flow"].id}>
+                                                <select className={"form-control"}  onChange={(e)=>this.changeEvent(e)} id={"select_user_priv_node_"+this.props["flow"].id}>
                                                     {nodeselectarr}
                                                 </select>
                                                 <br/><br/>
