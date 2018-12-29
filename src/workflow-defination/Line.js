@@ -260,10 +260,10 @@ class Line extends React.Component{
                      aria-hidden="true" data-backdrop="static">
                     <div className="modal-dialog largemodal"  >
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title vertial-center" id="myModalLabel">
+                                <h4 className="modal-title vertial-center " id="myModalLabel" style={{color:'#fff'}}>
                                     <span className={"glyphicon glyphicon-plane"}></span>
                                     &nbsp;&nbsp;维 护 连 线
                                 </h4>
@@ -279,7 +279,7 @@ class Line extends React.Component{
                                                                 <span className={"glyphicon glyphicon-arrow-left"}></span> &nbsp;上一步列表
                                                             </h3>
                                                         </div>
-                                                        <div className="panel-body">
+                                                        <div className="panel-body text-left">
                                                             {foreNodeArr}
                                                         </div>
                                                     </div>
@@ -299,7 +299,7 @@ class Line extends React.Component{
                                                                 下一步列表 &nbsp;<span className={"glyphicon glyphicon-arrow-right"}></span>
                                                             </h3>
                                                         </div>
-                                                        <div className="panel-body">
+                                                        <div className="panel-body text-left">
                                                             {nextNodeArr}
                                                         </div>
                                                     </div>
@@ -312,22 +312,20 @@ class Line extends React.Component{
                                 {/*<button type="button" className="btn btn-primary">提 交</button>&nbsp;*/}
                                 <button type="button" className="btn btn-warning" data-dismiss="modal">关 闭</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
                 <div className="modal fade" id={"mode_lineadd_"+outernode.id} tabIndex="-1" role="dialog"
                      aria-hidden="true">
                     <div className="modal-dialog smallmodal">
                         <div className="modal-content bg-danger">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{background:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title" id="label_nodeadd">
+                                <h4 className="modal-title" id="label_nodeadd" style={{color:'#fff'}}>
                                     <span className={"glyphicon glyphicon-pencil"}></span>
                                     &nbsp; 编 辑 连 线 属 性 &nbsp;
-                                    <span className={"text-danger"} id={"tips_no_lineadd_"+outernode.id}><strong>【当前连线状态：无】</strong></span>
+                                    <span  id={"tips_no_lineadd_"+outernode.id}><strong>【当前连线状态：无】</strong></span>
                                     <span className={"text-success"} id={"tips_yes_lineadd_"+outernode.id}><strong>【当前连线状态：有】</strong></span>
                                 </h4>
                             </div>

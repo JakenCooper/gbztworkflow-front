@@ -51,10 +51,10 @@ class NodeAdd extends React.Component{
                      aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title" id="label_nodeadd">
+                                <h4 className="modal-title" id="label_nodeadd" style={{color:'#fff'}}>
                                     + 添 加 节 点
                                 </h4>
                             </div>

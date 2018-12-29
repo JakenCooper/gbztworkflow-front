@@ -5,7 +5,7 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax,CommonObj} from '
 class FlowAdd extends React.Component{
     constructor(){
         super();
-        this.state={flows:[],rootNodeText:''};
+        this.state={flows:[],rootNodeText:'',attachTableList:[]};
         this.saveFlow = this.saveFlow.bind(this);
         this.inputChange = this.inputChange.bind(this);
     }
@@ -35,6 +35,28 @@ class FlowAdd extends React.Component{
                 $('#div_flowadd_connection select').val('oscar');
             }
         }});
+        let reqdata = serializeformajax($('#form_flowadd_connection'));
+        ajaxreq(adminPath+'/metadata/tables',{
+            type:'post',
+            contentType:ajax_content_type,
+            async:false,
+            data:reqdata,
+            dataType:'text',
+            success:(data)=>{
+                let treedata = JSON.parse(data);
+                let tbArray=new Array();
+                let endWith="attach";
+                for(var i=0;i<treedata[0].nodes.length;i++){
+                    let n=treedata[0].nodes[i].text.search(endWith);
+                    if(n!=-1){
+                        tbArray.push(treedata[0].nodes[i].text);
+                    }
+                }
+                this.setState({
+                    attachTableList:tbArray
+                })
+            }
+        });
 
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
             if ($('#form_flowadd_connection #flowName').val() == null || $('#form_flowadd_connection #flowName').val() == ''){
@@ -217,6 +239,7 @@ class FlowAdd extends React.Component{
             alert('并没有填写流程名称！');
             return ;
         }
+        var attachTableName=$("#attachTableName option:selected").text();
         let columnnamearr = new Array();
         for(let [index,ele] of columns.entries()){
             columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
@@ -297,10 +320,10 @@ class FlowAdd extends React.Component{
                  aria-hidden="true">
                 <div className="modal-dialog mediummodal">
                     <div className="modal-content">
-                        <div className="modal-header">
+                        <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                             <button type="button" className="close" data-dismiss="modal"
                                     aria-hidden="true">&times;</button>
-                            <h4 className="modal-title text-danger" id="myModalLabel">
+                            <h4 className="modal-title text-danger" id="myModalLabel" style={{color:'#fff'}}>
                                 + 添 加 流 程
                             </h4>
                         </div>
@@ -412,6 +435,24 @@ class FlowAdd extends React.Component{
                                                     </div>
                                                     <div className="col-lg-10">
                                                         <input type={"text"} value={this.state.flows.formKey} name="formKey" onChange={this.inputChange} placeholder={"不确定就不要填写！"} className={"form-control"}/>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <div className="col-lg-2 text-right">
+                                                        <label className="control-label">附件表</label>
+                                                    </div>
+                                                    <div className="col-lg-10">
+                                                        <select  name="attachfileTableName" className={"form-control"} id={"attachTableName"}>
+                                                            {
+                                                                this.state.attachTableList.map((item, i) => {
+                                                                    return (
+                                                                        <option key={i} value={item.replace(/\&nbsp\;/g,'')}>
+                                                                            {item.replace(/\&nbsp\;/g,'')}
+                                                                        </option>
+                                                                    );
+                                                                })
+                                                            }
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </form>

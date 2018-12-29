@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,8 +18,8 @@
 
     <script type="text/javascript">
         var alert_tag = true;
-        //var adminPath = 'http://localhost:8083/gbztworkflow';
-        var adminPath = 'http://192.168.1.4:8666/gw';
+        var adminPath = 'http://192.168.1.19:8666/gw';
+        // var adminPath = 'http://10.18.198.183:8666/gw';
         // var adminPath = 'http://192.168.1.17:8666/gw';
         // var adminPath = 'http://10.6.97.10:8666/gw';
         $(function(){
@@ -42,12 +42,13 @@
     <nav class="navbar navbar-inverse" >
         <section class="container-fluid">
             <div class="navbar-header">
-                <h2 class="navbar-text">国博政通工作流引擎 </h2>
+                <h2 class="navbar-text" id="logoTitle">国博政通工作流引擎 </h2>
             </div>
-            <div id="NavigationBar">
-            </div>
-            <div class="pull-right navbar-text">
-                &nbsp;&nbsp;<strong> [ 囍 ]  ╮(￣▽￣| ")╭  [ 囍 ]</strong>
+            <div class="pull-right navbar-text navTitleText">
+                <a href="#"> <span class="glyphicon glyphicon-user"></span>&nbsp;admin</a>
+                <a href="#">  <span class="glyphicon glyphicon-off"></span>&nbsp;退出</a>
+               &nbsp;&nbsp;&nbsp;
+                <!--<span class="glyphicon glyphicon-off">&nbsp;退出</span>-->
             </div>
         </section>
     </nav>

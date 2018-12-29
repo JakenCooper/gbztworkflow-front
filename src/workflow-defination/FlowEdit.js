@@ -322,10 +322,10 @@ class FlowEdit extends React.Component{
                      aria-hidden="true">
                     <div className="modal-dialog mediummodal">
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title text-danger" id={"myModalLabel_"+flowid}><span className={"glyphicon glyphicon-pencil"}></span>
+                                <h4 className="modal-title text-danger" id={"myModalLabel_"+flowid} style={{color:'#fff'}}><span className={"glyphicon glyphicon-pencil"}></span>
                                     &nbsp; 修 改 流 程
                                 </h4>
                             </div>

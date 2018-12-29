@@ -18,6 +18,15 @@ class NodeUserPriv extends React.Component{
                 let nodes1 = this.treeobj.getNodes();
                 var nodess =  this.treeobj.transformToArray(nodes1);
                 this.treeobj.checkAllNodes(false);
+                if (userloginname.indexOf(tag) != -1) {
+                    //   $('#radio_node_user_priv_sin_' + flowid).attr("checked", "false");
+                    let users = userloginname.split(",");
+                    for (let s = 0; s < users.length; s++) {
+                        userprivdata.push(users[s]);
+                    }
+                } else {
+                    userprivdata.push(userloginname);
+                }
                 //默认多选
                 var v=$(":radio[name='nodeUserPrivType']:checked").val();
                 if(userloginname.indexOf("noone")==-1) {
@@ -25,15 +34,7 @@ class NodeUserPriv extends React.Component{
                         //多人情况
                         $('#radio_node_user_priv_sin_' + flowid).attr("checked", false);
                         $('#radio_node_user_priv_mul_' + flowid).attr("checked", "true");
-                        if (userloginname.indexOf(tag) != -1) {
-                            //   $('#radio_node_user_priv_sin_' + flowid).attr("checked", "false");
-                            let users = userloginname.split(",");
-                            for (let s = 0; s < users.length; s++) {
-                                userprivdata.push(users[s]);
-                            }
-                        } else {
-                            userprivdata.push(userloginname);
-                        }
+
                         for(let j=0;j<nodess.length;j++){
                             // alert(nodess.length);
                             for(let z=0;z<userprivdata.length;z++){
@@ -47,7 +48,9 @@ class NodeUserPriv extends React.Component{
                         //单选框
                         $('#radio_node_user_priv_mul_' + flowid).attr("checked", false);
                         $('#radio_node_user_priv_sin_' + flowid).attr("checked", "true");
-                        userprivdata.push(userloginname);
+
+                        //add by zhangys LOGIC WTF????
+                        //userprivdata.push(userloginname);
                         for(let j=0;j<nodess.length;j++){
                             // alert(nodess.length);
                             for(let z=0;z<userprivdata.length;z++){
@@ -215,21 +218,6 @@ class NodeUserPriv extends React.Component{
                 loginNames.push(nodes[i].value);
             }
         }
-
-        let userprivdata = [];
-        let nodes1 = this.treeobj.getNodes();
-        if(typeof nodes1 != 'undefined'){
-            for(let j=0;j<nodes1.length;j++){
-                for(let z=0;z<userprivdata.length;z++){
-                    if(userprivdata[z].value == nodes1[j].value){
-                        ztree.checkNode(node1[j],true,true);
-                        break;
-                    }
-                }
-            }
-        }
-
-
         let nodeType= '';
         if($('#radio_node_user_priv_sin_'+flowid).is(':checked')){
             nodeType = 'single';
@@ -278,11 +266,11 @@ class NodeUserPriv extends React.Component{
                      aria-hidden="true">
                     <div className="modal-dialog mediummodal">
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title text-success" id="myModalLabel">
-                                    <b>+ 修改数据权限</b>
+                                <h4 className="modal-title text-success" id="myModalLabel" style={{color:'#fff'}}>
+                                    <b>+ 修改数据权限</b> <spn style={{color:'red'}}>提示：添加节点之后需要手动刷新页面才可以修改数据权限！</spn>
                                 </h4>
                             </div>
                             <div className="modal-body">

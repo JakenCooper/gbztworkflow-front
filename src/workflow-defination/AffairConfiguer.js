@@ -133,10 +133,10 @@ class AffairConfiguer extends React.Component{
                      aria-hidden="true">
                     <div className="modal-dialog " style={{width:1100}} >
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title" id="label_nodeadd">
+                                <h4 className="modal-title" id="label_nodeadd" style={{color:'#fff'}}>
                                     + 事务查询配置
                                 </h4>
                             </div>

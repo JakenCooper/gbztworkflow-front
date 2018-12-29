@@ -4,7 +4,6 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax} from './common';
 import FlowAdd from './workflow-defination/FlowAdd';
 import Node from './workflow-defination/Node';
 import BussAdd from './workflow-defination/BussAdd';
-import NavigationBar from './workflow-defination/NavigationBar';
 
 class SysMenu extends React.Component{
     constructor(){
@@ -16,8 +15,8 @@ class SysMenu extends React.Component{
     }
     componentDidMount(){
         ajaxreq(adminPath+'/defination/flows',{success:(flows) =>{
-            this.setState({flows:flows});
-        }});
+                this.setState({flows:flows});
+            }});
     }
     changeworkflow(e,flowid){
         window.currentflowid = flowid;
@@ -39,7 +38,7 @@ class SysMenu extends React.Component{
         ajaxreq(adminPath+'/defination/flows/'+flowId,{type:'DELETE',success:(data)=>{
                 // alert('删除成功！');
                 refreshWin();
-        }});
+            }});
     }
     render(){
         let flowmenuarr = new Array();
@@ -48,13 +47,19 @@ class SysMenu extends React.Component{
         for(let [index,flow] of this.state.flows.entries()) {
             if (index == 0) {
                 window.currentflowid2 = flow.id;
-                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()} className="active"><a className={"showA_"} onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()} href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.flowName}   
-                <button style={{float:'right',lineHeight:'0'}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={"btn btn-danger btn-sm"}><span className={"glyphicon glyphicon-trash"}></span>&nbsp;&nbsp;删  除</button>
+                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()} className="active"><a className={"showA_"} onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()} href={"#tabcontent_"+flow.id} data-toggle="tab">
+                    {flow.flowName}
+                    <a style={{float:'right',lineHeight:0}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={""}>
+                        <b></b>
+                    </a>
                 </a> </li>);
                 tabcontent = (<div className="tab-pane fade in active" id={"tabcontent_"+flow.id}><Node flow={flow}/></div>)
             }else{
-                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()}><a onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()}  href={"#tabcontent_"+flow.id} data-toggle="tab">●   {flow.flowName}
-                <button style={{float:'right',lineHeight:'0'}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={"btn btn-danger btn-sm"}><span className={"glyphicon glyphicon-trash"}></span>&nbsp;&nbsp;删  除</button>
+                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()}><a onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()}  href={"#tabcontent_"+flow.id} data-toggle="tab">
+                    {flow.flowName}
+                    <a style={{float:'right',lineHeight:'0'}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={""}>
+                        <b></b>
+                    </a>
                 </a></li>);
                 tabcontent = (<div className="tab-pane fade in" id={"tabcontent_"+flow.id}><Node flow={flow}/></div>)
             }
@@ -62,46 +67,49 @@ class SysMenu extends React.Component{
             tabcontentarr.push(tabcontent);
         }
         return(
-            <section className={"row"}>
-                <section className="col-lg-2">
-                    <section id="menu">
-                        <div className="panel-group" id="index_menugroup">
-                            <div className="panel panel-primary">
-                                <div className="panel-heading">
-                                    <h1 className="panel-title clearfix" style={{cursor:'pointer'}}>
-                                        <a data-toggle="collapse" data-parent="#menu"
-                                           href="#flowdefination">
-                                            <span className="glyphicon glyphicon-align-justify"></span> &nbsp;流 程 管 理
-                                        </a>
-                                    </h1>
-                                </div>
-                                <div className="panel-collapse collapse in" id="flowdefination">
-                                    <div className="block-justify">
-                                        <button className="btn btn-primary btn-group-justified" id="button_bussadd">
-                                            <span className="glyphicon glyphicon-plus"></span>
-                                            &nbsp;添 加 业 务 表
+            <section>
+                <div className="asideBoxLeft ">
+                    <aside>
+                        <div className="asideH4">
+                            <h4 className="clearfix text-center">
+                                <a href="#flowdefination" >
+                                    流 程 管 理
+                                </a>
+                            </h4>
+                            <div  id="flowdefination">
+                                <ul className="block-justify btnTwo">
+                                    <li>
+                                        <button className="btn btn-info btn-group-justified" id="button_bussadd">
+                                            添 加 业 务 表
                                         </button>
-                                        <br/>
+                                    </li>
+                                    <li>
                                         <button className="btn btn-info btn-group-justified" id="button_flowadd">
-                                            <span className="glyphicon glyphicon-plus"></span>
-                                            &nbsp;添 加 流 程
+                                            添 加 流 程
                                         </button>
-                                    </div>
-                                    <div className="panel-body">
-                                        <ul className="nav nav-pills nav-stacked">
-                                            {flowmenuarr}
-                                        </ul>
-                                    </div>
-                                </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                    </section>
-                </section>
-                <section className="col-lg-10">
+                        <div id="panelBoxTwo">
+                            <h4>
+                                <span className="glyphicon glyphicon-list-alt"></span>
+                                流程模板
+                                <span className='glyphicon glyphicon-menu-down'></span>
+                            </h4>
+                            <div>
+                                <ul className="nav nav-pills nav-stacked">
+                                    {flowmenuarr}
+                                </ul>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                <div className="asideBoxRight ">
                     <div className="tab-content">
                         {tabcontentarr}
                     </div>
-                </section>
+                </div>
             </section>
         );
     }
@@ -109,4 +117,3 @@ class SysMenu extends React.Component{
 ReactDom.render(<SysMenu/>,document.getElementById("main"));
 ReactDom.render(<FlowAdd/>,document.getElementById("section_flowadd"));
 ReactDom.render(<BussAdd/>,document.getElementById("section_bussadd"));
-ReactDom.render(<NavigationBar/>,document.getElementById("NavigationBar"));

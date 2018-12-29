@@ -46,6 +46,12 @@ class NodeUpdate extends React.Component{
     }
     render(){
         let currentNode = this.props['node'];
+        if (currentNode.beginNode){
+            $('#beginNode_'+currentNode.id).attr("checked", 'checked');
+        }
+        if (currentNode.endNode){
+            $('#endNode_'+currentNode.id).attr("checked", 'checked');
+        }
         return(
             <div className={"inlineblock"}>
                 <button className={"btn btn-warning btn-sm"} id={"button_nodeupdate_"+currentNode.id}><span className="glyphicon glyphicon-pencil"></span>
@@ -54,10 +60,10 @@ class NodeUpdate extends React.Component{
                      aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header">
+                            <div className="modal-header" style={{backgroundColor:'#2083d4'}}>
                                 <button type="button" className="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
-                                <h4 className="modal-title" id={"label_nodeupdate_"+currentNode.id}>
+                                <h4 className="modal-title" id={"label_nodeupdate_"+currentNode.id} style={{color:'#fff'}}>
                                     + 修 改 节 点
                                 </h4>
                             </div>
@@ -111,12 +117,12 @@ class NodeUpdate extends React.Component{
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
                                                     <label>
-                                                        <input type="checkbox" name={"beginNode"} value={"true"}/> 起始节点
+                                                        <input type="checkbox" id={"beginNode_"+currentNode.id} name={"beginNode"} value={"true"}/> 起始节点
                                                     </label>
                                                 </div>
                                                 <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
                                                     <label>
-                                                        <input type="checkbox" name={"endNode"} value={true}/> 结束节点
+                                                        <input type="checkbox" id={"endNode_"+currentNode.id} name={"endNode"} value={true}/> 结束节点
                                                     </label>
                                                 </div>
                                             </div>
