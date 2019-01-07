@@ -5,8 +5,13 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax,CommonObj} from '
 class FlowEdit extends React.Component{
     constructor(){
         super();
-        this.state={flows:[],flowBuss:[],rootNodeName:''};
-
+        this.state={
+            flows:[],
+            flowBuss:[],
+            rootNodeName:'', // 根节点(库名)
+            selectedTableNodeName:'',// 已选表节点
+            selectedFieldNodeName:[]// 已选字段节点
+        }; 
         this.saveFlow = this.saveFlow.bind(this);
         this.inputChange = this.inputChange.bind(this);
     }
@@ -45,6 +50,24 @@ class FlowEdit extends React.Component{
             }
         }});
 
+        $('#tab_flowEdit_'+flowid).find('[data-toggle="tab"]:eq(0)').on('show.bs.tab',(e)=>{
+            let treesection = $('#div_flowEdit_tableselection_'+flowid+' > div');
+            let tableselections = treesection.treeview('getSelected');
+            let selectedTableName = tableselections[0].text.replace(/\&nbsp\;/g,''); // 选择的表名
+            this.setState({selectedTableNodeName:selectedTableName}); // 记录所选表名
+
+
+            let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
+            let columns = columnsection.treeview('getSelected', 0);
+            let columnnamearr = new Array();
+            try{
+                for(let [index,ele] of columns.entries()){
+                    columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
+                }
+            }catch (e) {
+            }
+            this.setState({selectedFieldNodeName: columnnamearr});
+        });
         $('#tab_flowEdit_'+flowid).find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
             if ($('#form_flowEdit_connection_'+flowid+' [name="flowName"]').val() == null || $('#form_flowEdit_connection_'+flowid+'  [name="flowName"]').val() == ''){
                 alert('并没有填写流程名称！');
@@ -83,6 +106,19 @@ class FlowEdit extends React.Component{
                 alert('并没有填写模块路径！');
                 return false;
             }
+
+            // 设置默认选中字段
+            let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
+            let columns = columnsection.treeview('getSelected', 0);
+            let columnnamearr = new Array();
+            try{
+                for(let [index,ele] of columns.entries()){
+                    columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
+                }
+            }catch (e) {
+            }
+            this.setState({selectedFieldNodeName: columnnamearr});
+            
             // 判断模块路径是否'/'结尾,若不是则自动添加
             if (moduleRootPath.charAt(moduleRootPath.length-1) != "/"){
                 if ( moduleRootPath.charAt(moduleRootPath.length-1) != "\\"){
@@ -114,10 +150,14 @@ class FlowEdit extends React.Component{
                     var rootNodeText = '';
                     for (let i = 1; i < columns.length; i++) {
                         // 此处获取根节点的名字,防止第三步选择根节点
-                        rootNodeText = columns[0].text.replace(/\&nbsp\;/g,'');
-                        let text = columns[i].text.replace(/\&nbsp\;/g,'');
-                        if (tableName == text) {
+                        rootNodeText = columns[0].text.replace(/\&nbsp\;/g, '');
+                        let text = columns[i].text.replace(/\&nbsp\;/g, '');
+                        if (this.state.selectedTableNodeName == text) {
                             treesection.treeview('selectNode', [i, {silent: true}]);
+                            break;
+                        }else if (tableName == text) {
+                            treesection.treeview('selectNode', [i, {silent: true}]);
+                            break;
                         }
                     }
                     this.setState({
@@ -168,7 +208,7 @@ class FlowEdit extends React.Component{
                 }
             }
             let selectedTableName = tableselections[0].text.replace(/\&nbsp\;/g,''); // 选择的表名
-            
+            this.setState({selectedTableNodeName: selectedTableName}); // 保存已选择的表名
             $('#hidden_flowEdit_connection_busstblid_'+flowid).val( tableselections[0].nodeId);
             $('#hidden_flowEdit_connection_busstblname_'+flowid).val(selectedTableName);
             let reqdata = serializeformajax($('#form_flowEdit_connection_'+flowid));
@@ -209,6 +249,17 @@ class FlowEdit extends React.Component{
                                     columnsection.treeview('selectNode', [i, {silent: true}]);
                                 }
                             }
+                        }
+                    }else { // 设置默认选中字段
+                        let field = this.state.selectedFieldNodeName;
+                        let columns = columnsection.treeview('getEnabled');
+                        for (let i = 1; i < columns.length; i++) {
+                            let text = columns[i].text.replace(/\&nbsp\;/g,'');
+                            for (let k = 0; k < field.length; k++) {
+                                if (text == field[k]) {
+                                    columnsection.treeview('selectNode', [i, {silent: true}]);
+                                }
+                            } 
                         }
                     }
                     //treesection.treeview('selectNode',[3,{silent:true}]);

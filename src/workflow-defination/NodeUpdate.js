@@ -46,12 +46,6 @@ class NodeUpdate extends React.Component{
     }
     render(){
         let currentNode = this.props['node'];
-        if (currentNode.beginNode){
-            $('#beginNode_'+currentNode.id).attr("checked", 'checked');
-        }
-        if (currentNode.endNode){
-            $('#endNode_'+currentNode.id).attr("checked", 'checked');
-        }
         return(
             <div className={"inlineblock"}>
                 <button className={"btn btn-warning btn-sm"} id={"button_nodeupdate_"+currentNode.id}><span className="glyphicon glyphicon-pencil"></span>
@@ -117,12 +111,12 @@ class NodeUpdate extends React.Component{
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
                                                     <label>
-                                                        <input type="checkbox" id={"beginNode_"+currentNode.id} name={"beginNode"} value={"true"}/> 起始节点
+                                                        <input type="checkbox" id={"beginNode_"+currentNode.id} defaultChecked={currentNode.beginNode} name={"beginNode"} value={"true"}/> 起始节点
                                                     </label>
                                                 </div>
                                                 <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
                                                     <label>
-                                                        <input type="checkbox" id={"endNode_"+currentNode.id} name={"endNode"} value={true}/> 结束节点
+                                                        <input type="checkbox" id={"endNode_"+currentNode.id} defaultChecked={currentNode.endNode} name={"endNode"} value={true}/> 结束节点
                                                     </label>
                                                 </div>
                                             </div>

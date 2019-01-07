@@ -5,7 +5,13 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax,CommonObj} from '
 class FlowAdd extends React.Component{
     constructor(){
         super();
-        this.state={flows:[],rootNodeText:'',attachTableList:[]};
+        this.state={
+            flows:[],
+            rootNodeText:'',
+            attachTableList:[],
+            selectedTableNodeName:'',// 已选表节点
+            selectedFieldNodeName:[]// 已选字段节点
+        };
         this.saveFlow = this.saveFlow.bind(this);
         this.inputChange = this.inputChange.bind(this);
     }
@@ -17,9 +23,6 @@ class FlowAdd extends React.Component{
                 $('#hidden_flowadd_connection_busstblname').val('');
             });
             $('#modal_flowadd').modal('show');
-            $('#modal_flowadd').on('hidden.bs.modal',function(){
-                $("#form_flowadd_connection")[0].reset();
-            });
         });
 
         ajaxreq(adminPath+'/metadata/defaults',{async:false, success:(data)=>{
@@ -35,7 +38,7 @@ class FlowAdd extends React.Component{
                 $('#div_flowadd_connection select').val('oscar');
             }
         }});
-        let reqdata = serializeformajax($('#form_flowadd_connection'));
+        let reqdata = serializeformajax($('#form_flowadd_connection'),{refresh:true});
         ajaxreq(adminPath+'/metadata/tables',{
             type:'post',
             contentType:ajax_content_type,
@@ -58,6 +61,23 @@ class FlowAdd extends React.Component{
             }
         });
 
+        $('#tab_flowadd').find('[data-toggle="tab"]:eq(0)').on('show.bs.tab',(e)=>{
+            let treesection = $('#div_flowadd_tableselection > div');
+            let tableselections = treesection.treeview('getSelected');
+            let selectedTableName = tableselections[0].text.replace(/\&nbsp\;/g,''); // 选择的表名
+            this.setState({selectedTableNodeName:selectedTableName}); // 记录所选表名
+
+            try{
+                let columnsection = $('#div_flowadd_columnselection > div');
+                let columns = columnsection.treeview('getSelected', 0);
+                let columnnamearr = new Array();
+                    for(let [index,ele] of columns.entries()){
+                        columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
+                    }
+                this.setState({selectedFieldNodeName: columnnamearr});
+            }catch (e) {
+            }
+        });
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(1)').on('show.bs.tab',(e)=>{
             if ($('#form_flowadd_connection #flowName').val() == null || $('#form_flowadd_connection #flowName').val() == ''){
                 alert('并没有填写流程名称！');
@@ -110,6 +130,17 @@ class FlowAdd extends React.Component{
             }
             let reqdata = serializeformajax($('#form_flowadd_connection'));
             $('#input_flowadd_tableselection_search').val('');
+
+            try{
+                let columnsection = $('#div_flowadd_columnselection > div');
+                let columns = columnsection.treeview('getSelected', 0);
+                let columnnamearr = new Array();
+                for(let [index,ele] of columns.entries()){
+                    columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
+                }
+                this.setState({selectedFieldNodeName: columnnamearr});
+            }catch (e) {
+            }
             ajaxreq(adminPath+'/metadata/tables',{
                 type:'post',
                 contentType:ajax_content_type,
@@ -127,14 +158,18 @@ class FlowAdd extends React.Component{
                     treesection.treeview(CommonObj.genTreeView(true,treedata));
                     let columns = treesection.treeview('getEnabled');
                     for (let i = 0; i < columns.length; i++) {
+                        let text = columns[i].text.replace(/\&nbsp\;/g, '');
                         if (i<1){
                             let text = columns[i].text.replace(/\&nbsp\;/g,'');
                             this.setState({
                                 rootNodeText:text
-                            })
-                            return
-                        } 
+                            });
+                        }else if (this.state.selectedTableNodeName == text) {// 设置默认选中表名
+                            treesection.treeview('selectNode', [i, {silent: true}]);
+                            break;
+                        }
                     }
+                    
                     // treesection.treeview('disableNode', [ 0, { silent: true } ]);
                     // $('#tree').treeview('revealNode', [ 0, { silent: true } ]);
                     // treesection.treeview('expandAll', { levels: 2, silent: true });
@@ -169,6 +204,7 @@ class FlowAdd extends React.Component{
 
         $('#tab_flowadd').find('[data-toggle="tab"]:eq(2)').on('show.bs.tab',(e)=>{
             //alert($('#tab_flowadd').find('[data-toggle="tab"]:eq(2)').length);
+            
             let treesection = $('#div_flowadd_tableselection > div');
             let tableselections = treesection.treeview('getSelected');
             if(tableselections.length == 0){
@@ -183,6 +219,7 @@ class FlowAdd extends React.Component{
                 }
             }
             let selectedTableName = tableselections[0].text.replace(/\&nbsp\;/g,'');
+            this.setState({selectedTableNodeName:selectedTableName}); // 记录所选表名
             $('#hidden_flowadd_connection_busstblid').val( tableselections[0].nodeId);
             $('#hidden_flowadd_connection_busstblname').val(selectedTableName);
             let reqdata = serializeformajax($('#form_flowadd_connection'));
@@ -199,12 +236,11 @@ class FlowAdd extends React.Component{
                     columnsection.treeview(CommonObj.genTreeView(false,treedata));
                     let columns = columnsection.treeview('getEnabled');
                     for (let i = 0; i < columns.length; i++) {
-                        if (i<1){
-                            let text = columns[i].text.replace(/\&nbsp\;/g,'');
-                            this.setState({
-                                rootNodeText:text
-                            })
-                            return
+                        let text = columns[i].text.replace(/\&nbsp\;/g,'');
+                        for (let j = 0; j < this.state.selectedFieldNodeName.length; j++) {
+                            if (text == this.state.selectedFieldNodeName[j]){
+                                columnsection.treeview('selectNode', [i, {silent: true}]);
+                            }
                         }
                     }
                     //treesection.treeview('selectNode',[3,{silent:true}]);
@@ -302,7 +338,6 @@ class FlowAdd extends React.Component{
         }else { // 反选(暂时无法反选..)
             let columnssss = columnsection.treeview('getSelected');
             for (let i = 1; i < columnssss.length; i++) {
-                console.log(columnssss[i].nodeId);
                 columnsection.treeview('toggleNodeChecked', [ columnssss[i].nodeId, { silent: true } ]);
             }
             columnsection.treeview('uncheckAll', { silent: true });

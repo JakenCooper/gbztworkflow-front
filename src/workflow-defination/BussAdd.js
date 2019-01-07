@@ -17,9 +17,6 @@ class FlowAdd extends React.Component{
                 $('#hidden_bussadd_connection_busstblname').val('');
             });
             $('#modal_bussadd').modal('show');
-            $('#modal_bussadd').on('hidden.bs.modal',function(){
-                $("#form_bussadd_connection")[0].reset();
-            });
         });
 
         ajaxreq(adminPath+'/metadata/defaults',{async:false, success:(data)=>{
@@ -304,6 +301,15 @@ class FlowAdd extends React.Component{
                 let content = '<tr>' +
                     '<td><input type="text" name="columnName" class="form-control input-sm" value="proc_ins_id"/></td>' +
                     '<td><input type="text" name="columnType" class="form-control input-sm" value="varchar(100)"/></td>' +
+                    '<td class="text-center"><div class="radio"><label><input type="radio" name="pkselect" value="1" disabled> 选择</label></div></td>' +
+                    '<td class="text-center"><buttron type="button" class="btn btn-danger btn-sm" onclick="(function(){window.tbl_bussadd_tableselection_func_deltr(arguments[0]);})(this)">删 除</buttron></td>' +
+                    '</tr>';
+                $('#tbl_bussadd_tableselection_tbody').append(content);
+            }
+            if(!createdateexiststag){
+                let content = '<tr>' +
+                    '<td><input type="text" name="columnName" class="form-control input-sm" value="create_date"/></td>' +
+                    '<td><input type="text" name="columnType" class="form-control input-sm" value="datetime"/></td>' +
                     '<td class="text-center"><div class="radio"><label><input type="radio" name="pkselect" value="1" disabled> 选择</label></div></td>' +
                     '<td class="text-center"><buttron type="button" class="btn btn-danger btn-sm" onclick="(function(){window.tbl_bussadd_tableselection_func_deltr(arguments[0]);})(this)">删 除</buttron></td>' +
                     '</tr>';
