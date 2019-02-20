@@ -24,7 +24,8 @@ const ajaxreqerrorhandle  = (xhr,textStatus,errorThrown) =>{
     }
     console.log(info);
     if(alert_tag && info.indexOf('code') == -1){
-        alert(info);
+        console.log("------------------- 真的未知错误！。。。。"+info);
+        //alert(info);
     }
 };
 
@@ -36,6 +37,7 @@ const ajaxreq = (url,{type='get',async=true,contentType='application/x-www-form-
 data={},dataType='json',xhrFields={withCredentials: true},success=function(){},error=ajaxreqerrorhandle
     ,complete=ajaxreqcomp}={}) => {
     //$('body').mLoading('show');
+    console.log('=========  准备请求url：：：： '+url);
     $.ajax({
         url:url,
         type:type,
@@ -61,10 +63,17 @@ const serializeformajax = (ele,data={}) => {
     return JSON.stringify(obj);
 }
 
-const refreshWin = () =>{
-    window.location.reload();
+// 刷新的时候传个FlowId 则在刷新完毕之后,自动跳转至对应流程. 
+const refreshWin = (flowId) =>{
+    console.log(!typeof(flowId) == undefined || null != flowId || '' != flowId);
+    if (!typeof(flowId) == undefined || null != flowId || '' != flowId) {
+        window.location.reload();
+        localStorage.setItem('flowId',flowId);
+    }else {
+        window.location.reload();
+        localStorage.setItem('flowId',null);
+    }
 };
-
 
 const CommonObj ={
     genTreeView : (singleselect,data)=>{

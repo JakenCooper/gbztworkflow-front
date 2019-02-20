@@ -247,3 +247,8 @@ ul{
 #NavigationBar{
     float: left;
 }
+
+/*加个样式 Wanglh*/
+div.overflowy li.list-group-item{
+    margin-bottom: -1px!important;
+}

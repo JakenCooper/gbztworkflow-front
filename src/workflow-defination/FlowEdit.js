@@ -10,10 +10,14 @@ class FlowEdit extends React.Component{
             flowBuss:[],
             rootNodeName:'', // 根节点(库名)
             selectedTableNodeName:'',// 已选表节点
-            selectedFieldNodeName:[]// 已选字段节点
-        }; 
+            selectedFieldNodeName:[],// 已选字段节点
+            checkState:false,
+            selectOldTableNodeName:'',
+            _timestampFields:[]
+        };
         this.saveFlow = this.saveFlow.bind(this);
         this.inputChange = this.inputChange.bind(this);
+        this.selectAllColumn=this.selectAllColumn.bind(this);
     }
     componentDidMount(){
         let flowid = this.props['flowid'];
@@ -44,9 +48,14 @@ class FlowEdit extends React.Component{
             $('#div_flowEdit_connection_'+flowid+' [name="bussDbUserPwd"]').val(data.bussDbUserPwd);
             $('#div_flowEdit_connection_'+flowid+' [name="moduleRootPath"]').val(data.moduleRootPath);
             if(data.bussDbType == 'mysql'){
-                $('#div_flowEdit_connection_'+flowid+' select').val('mysql');
+                $('#div_flowEdit_connection_'+flowid+' select[name="bussDbType"]').val('mysql');
             }else if (data.bussDbType == 'oscar'){
-                $('#div_flowEdit_connection_'+flowid+' select').val('oscar');
+                $('#div_flowEdit_connection_'+flowid+' select[name="bussDbType"]').val('oscar');
+            }
+            if(data.flowType == 'S'){
+                $('#div_flowEdit_connection_'+flowid+' select[name="flowType"]').val('S');
+            }else if (data.flowType == 'F'){
+                $('#div_flowEdit_connection_'+flowid+' select[name="flowType"]').val('F');
             }
         }});
 
@@ -73,45 +82,51 @@ class FlowEdit extends React.Component{
                 alert('并没有填写流程名称！');
                 return false;
             }
+            if ($('#form_flowEdit_connection_'+flowid+' [name="flowType"]').val() == null || $('#form_flowEdit_connection_'+flowid+'  [name="flowType"]').val() == ''){
+                alert('并没有填写流程类型！');
+                return false;
+            }
             var bussDbHost = $('#form_flowEdit_connection_'+flowid+' [name="bussDbHost"]').val();
-            if (bussDbHost == null || bussDbHost == ''){
+       /*     if (bussDbHost == null || bussDbHost == ''){
                 alert('并没有填写数据库主机！');
-                return false;}
-            if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbPort"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbPort"]').val() == ''){
+                return false;}*/
+    /*        if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbPort"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbPort"]').val() == ''){
                 alert('并没有填写端口号！');
                 return false;
-            }
-            if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbUserName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbUserName"]').val() == ''){
+            }*/
+        /*    if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbUserName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbUserName"]').val() == ''){
                 alert('并没有填写用户！');
                 return false;
-            }
-            if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbName"]').val() == ''){
+            }*/
+          /*  if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbName"]').val() == ''){
                 alert('并没有填写数据库名称！');
                 return false;
-            }
-            if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbUserPwd"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbUserPwd"]').val() == ''){
+            }*/
+          /*  if ($('#form_flowEdit_connection_'+flowid+' [name="bussDbUserPwd"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="bussDbUserPwd"]').val() == ''){
                 alert('并没有填写密码！');
                 return false;
-            }
-            if ($('#form_flowEdit_connection_'+flowid+' [name="moduleName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="moduleName"]').val() == ''){
+            }*/
+          /*  if ($('#form_flowEdit_connection_'+flowid+' [name="moduleName"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="moduleName"]').val() == ''){
                 alert('并没有填写模块英文名！');
                 return false;
-            }
-            if ($('#form_flowEdit_connection_'+flowid+' [name="moduleNameCn"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="moduleNameCn"]').val() == ''){
+            }*/
+        /*    if ($('#form_flowEdit_connection_'+flowid+' [name="moduleNameCn"]').val() == null || $('#form_flowEdit_connection_'+flowid+' [name="moduleNameCn"]').val() == ''){
                 alert('并没有填写模块中文名！');
                 return false;
-            }
+            }*/
             var moduleRootPath = $('#form_flowEdit_connection_'+flowid+' [name="moduleRootPath"]').val();
-            if (moduleRootPath == null || moduleRootPath == ''){
+      /*      if (moduleRootPath == null || moduleRootPath == ''){
                 alert('并没有填写模块路径！');
                 return false;
-            }
+            }*/
 
             // 设置默认选中字段
             let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
-            let columns = columnsection.treeview('getSelected', 0);
-            let columnnamearr = new Array();
+            let columns = null;
+            let columnnamearr = null;
             try{
+                columns = columnsection.treeview('getSelected', 0);
+                columnnamearr = new Array();
                 for(let [index,ele] of columns.entries()){
                     columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
                 }
@@ -148,21 +163,24 @@ class FlowEdit extends React.Component{
                     let tableName = $('#bussTableName_'+flowid).val();
                     let columns = treesection.treeview('getEnabled');
                     var rootNodeText = '';
+                    let tableNameI = 0;
                     for (let i = 1; i < columns.length; i++) {
                         // 此处获取根节点的名字,防止第三步选择根节点
                         rootNodeText = columns[0].text.replace(/\&nbsp\;/g, '');
                         let text = columns[i].text.replace(/\&nbsp\;/g, '');
                         if (this.state.selectedTableNodeName == text) {
+                            tableNameI = i;
                             treesection.treeview('selectNode', [i, {silent: true}]);
                             break;
                         }else if (tableName == text) {
+                            tableNameI = i;
                             treesection.treeview('selectNode', [i, {silent: true}]);
-                            break;
                         }
                     }
                     this.setState({
                         rootNodeName:rootNodeText
                     });
+
                     //alert(result.length);
                     /*if($('#hidden_flowadd_connection_busstblid').val() != ''){
                         treesection.treeview('selectNode',[$('#hidden_flowadd_connection_busstblid').val(),{silent:true}]);
@@ -172,8 +190,8 @@ class FlowEdit extends React.Component{
             // let height = $($('#input_flowEdit_tableselection_search_'+flowid).nextAll('div.overflowy')).find($('ul.list-group')[0]).width();
             // console.log(height);
         });
-
         $('#input_flowEdit_tableselection_search_'+flowid).on('keydown',(e)=>{
+            // alert(111);
             e.stopPropagation();
             if(e.keyCode != 13){
                 return;
@@ -234,6 +252,18 @@ class FlowEdit extends React.Component{
                 dataType:'text',
                 success:(data)=>{
                     let treedata = JSON.parse(data);
+                    let treedata2 = treedata[0].nodes;
+                    // 处理表中字段,去掉 _timestamp 标记
+                    let timestampFieldList = new Array();
+                    for (let i = 0; i < treedata2.length; i++) {
+                        if (treedata2[i].text.indexOf('_timestamp') >= 0){
+                            treedata2[i].text = treedata2[i].text.replace('_timestamp','');
+                            timestampFieldList.push(treedata2[i].text);
+                        }
+                    }
+                    this.setState({
+                        _timestampFields:timestampFieldList
+                    });
                     let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
                     columnsection.treeview(CommonObj.genTreeView(false,treedata));
                     // 根据表名,设置默认选中业务字段
@@ -266,7 +296,6 @@ class FlowEdit extends React.Component{
                 }
             });
         });
-        
     }
     allCheckBoxChange(flowid,e){
         let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
@@ -289,6 +318,24 @@ class FlowEdit extends React.Component{
             flows:{attrname:e.target.value}
         });
     }
+    selectAllColumn(){
+        let columnsection = $('#div_flowadd_columnselection > div');
+        let columns = columnsection.treeview('getEnabled');
+        let length=columns.length;
+        this.setState({
+            selectOldTableNodeName:this.state.selectedTableNodeName
+        });
+        let selectedTableNodeName=this.state.selectedTableNodeName;
+        let selectOldTableNodeName=this.state.selectOldTableNodeName;
+        //改变表时全选
+        if(!this.state.checkState||(selectOldTableNodeName!=''&&selectedTableNodeName!=selectOldTableNodeName)){
+            for (let i = 1; i < length; i++) {
+                columnsection.treeview('selectNode', [i, {silent: true}]);
+            }
+            this.state.checkState=true;
+        }
+
+    }
     saveFlow(flowid,event){
         let tablename = $('#hidden_flowEdit_connection_busstblname_'+flowid).val();
         let columnsection = $('#div_flowEdit_columnselection_'+flowid+' > div');
@@ -309,8 +356,15 @@ class FlowEdit extends React.Component{
         if(!confirm('确认修改流程？')){
             return;
         }
+        $('body').mLoading('show');
         let columnnamearr = new Array();
         for(let [index,ele] of columns.entries()){
+            // 此前将字段中的 _timestamp标记隐藏,现在补上
+            for (let i = 0; i < this.state._timestampFields.length; i++) {
+                if (ele.text == this.state._timestampFields[i]){
+                    ele.text += '_timestamp';
+                }
+            }
             columnnamearr.push(ele.text.replace(/\&nbsp\;/g,''));
         }
 
@@ -359,9 +413,17 @@ class FlowEdit extends React.Component{
             dataType:'text',
             success:(result) =>{
                 alert(result);
-                refreshWin();
+                refreshWin(flowid);
             }
         });
+    }
+    selectTable(flowId,e){
+        setTimeout(function () {
+            let anchorElement = document.getElementById("div_flowEdit_tableselection_"+flowId).lastElementChild.firstElementChild.getElementsByClassName('node-selected')[0];
+            if(anchorElement) {
+                anchorElement.scrollIntoView({block: 'start', behavior: 'smooth'});
+            }
+        },200);
     }
     render(){
         let flowid = this.props['flowid'];
@@ -386,10 +448,10 @@ class FlowEdit extends React.Component{
         
                                         <ul className="nav nav-tabs" id={"tab_flowEdit_"+flowid}>
                                             <li className="active"><a href={"#div_flowEdit_connection_"+flowid} className={"text-danger"} data-toggle="tab">
-                                                <strong> ☞ 第一步：连接信息</strong></a></li>
-                                            <li><a href={"#div_flowEdit_tableselection_"+flowid}  className={"text-danger"} data-toggle="tab">
+                                                <strong> ☞ 第一步：流程信息</strong></a></li>
+                                            <li><a href={"#div_flowEdit_tableselection_"+flowid} onClick={this.selectTable.bind(this,flowid)}  className={"text-danger"} data-toggle="tab">
                                                 <strong> ☞ 第二步：选择业务表</strong></a></li>
-                                            <li><a href={"#div_flowEdit_columnselection_"+flowid}  className={"text-danger"} data-toggle="tab">
+                                            <li onClick={this.selectAllColumn}><a href={"#div_flowEdit_columnselection_"+flowid}  className={"text-danger"} data-toggle="tab">
                                                 <strong> ☞ 第三步：确定业务字段范围</strong></a></li>
                                         </ul>
         
@@ -407,7 +469,20 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} name="flowName" onChange={this.inputChange} value={this.state.flows.flowName} className={"form-control"} />
                                                         </div>
                                                     </div>
+                                                    
                                                     <div className="form-group">
+                                                        <div className="col-lg-2 text-right">
+                                                            <label className="control-label"><font color="red">*</font> 流程类型</label>
+                                                        </div>
+                                                        <div className="col-lg-10">
+                                                            <select name="flowType" className={"form-control"}>
+                                                                <option value={"S"}>收文流程</option>
+                                                                <option value={"F"} selected>发文流程</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 数据库类型</label>
                                                         </div>
@@ -418,7 +493,7 @@ class FlowEdit extends React.Component{
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 数据库主机</label>
                                                         </div>
@@ -426,15 +501,15 @@ class FlowEdit extends React.Component{
                                                             <input type="text" name="bussDbHost" onChange={this.inputChange} value={this.state.flows.bussDbHost} className={"form-control"}  />
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 数据库端口</label>
                                                         </div>
-                                                        <div className="col-lg-10">
+                                                        <div className="col-lg-10" >
                                                             <input type={"text"} name="bussDbPort" onChange={this.inputChange} value={this.state.flows.bussDbPort} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 数据库名称</label>
                                                         </div>
@@ -443,7 +518,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} style={{display:'none'}} id={"bussTableName_"+flowid} name={"bussTableName_"+flowid} value={this.state.flows.bussTableName} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 用   户</label>
                                                         </div>
@@ -451,7 +526,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} name="bussDbUserName" onChange={this.inputChange} value={this.state.flows.bussDbUserName} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 密   码</label>
                                                         </div>
@@ -459,7 +534,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"password"} name="bussDbUserPwd" onChange={this.inputChange} value={this.state.flows.bussDbUserPwd} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 模块名称（英）</label>
                                                         </div>
@@ -467,7 +542,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} name="moduleName" onChange={this.inputChange} value={this.state.flows.moduleName} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 模块名称（中）</label>
                                                         </div>
@@ -475,7 +550,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} name="moduleNameCn" onChange={this.inputChange} value={this.state.flows.moduleNameCn} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label"><font color="red">*</font> 模块路径</label>
                                                         </div>
@@ -483,7 +558,7 @@ class FlowEdit extends React.Component{
                                                             <input type={"text"} name="moduleRootPath" onChange={this.inputChange} value={this.state.flows.moduleRootPath} className={"form-control"}/>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className="form-group" style={{display:"none"}}>
                                                         <div className="col-lg-2 text-right">
                                                             <label className="control-label">form_key</label>
                                                         </div>
@@ -500,7 +575,7 @@ class FlowEdit extends React.Component{
                                                 <div className={"overflowy"}></div>
                                             </div>
                                             <div className="tab-pane fade" id={"div_flowEdit_columnselection_"+flowid}>
-                                                全选 : <input onChange={this.allCheckBoxChange.bind(this,flowid)} name={"asdasd"} type="checkbox" /><br/>
+                                                <div style={{display:'none'}}>全选 : <input onChange={this.allCheckBoxChange.bind(this,flowid)} name={"asdasd"} type="checkbox" /></div>
                                                 <div className={"overflowy"}></div>
                                             </div>
                                         </div>

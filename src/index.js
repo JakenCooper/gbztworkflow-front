@@ -4,19 +4,26 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax} from './common';
 import FlowAdd from './workflow-defination/FlowAdd';
 import Node from './workflow-defination/Node';
 import BussAdd from './workflow-defination/BussAdd';
+import ConfigInfo from "./workflow-defination/ConfigInfo";
 
 class SysMenu extends React.Component{
     constructor(){
         super();
         this.state = {
-            flows:[]
+            flows:[],
+            tableName:''
         };
         this.changeworkflow = this.changeworkflow.bind(this);
     }
     componentDidMount(){
         ajaxreq(adminPath+'/defination/flows',{success:(flows) =>{
                 this.setState({flows:flows});
-            }});
+        }});
+    }
+    componentDidUpdate(){
+        console.log(localStorage.getItem('flowId'));
+        $("#JumpA_"+localStorage.getItem('flowId')).click();
+        localStorage.setItem('flowId',null);
     }
     changeworkflow(e,flowid){
         window.currentflowid = flowid;
@@ -31,14 +38,19 @@ class SysMenu extends React.Component{
     onMouseOut(e,flowId){
         // e.target.removeChild("button");
     }
+
+    getTableName(tableName){ // 创建的业务表名
+        this.setState({tableName:tableName});
+    }
+    
     deleteFlow(e,flowId,flowName){
         if(!confirm('确认删除 \''+flowName+'\' 流程？ id为 : '+flowId)){
             return;
         }
         ajaxreq(adminPath+'/defination/flows/'+flowId,{type:'DELETE',success:(data)=>{
-                // alert('删除成功！');
-                refreshWin();
-            }});
+            // alert('删除成功！');
+            refreshWin();
+        }});
     }
     render(){
         let flowmenuarr = new Array();
@@ -47,7 +59,7 @@ class SysMenu extends React.Component{
         for(let [index,flow] of this.state.flows.entries()) {
             if (index == 0) {
                 window.currentflowid2 = flow.id;
-                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()} className="active"><a className={"showA_"} onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()} href={"#tabcontent_"+flow.id} data-toggle="tab">
+                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()} className="active"><a id={"JumpA_"+flow.id} className={"showA_"} onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()} href={"#tabcontent_"+flow.id} data-toggle="tab">
                     {flow.flowName}
                     <a style={{float:'right',lineHeight:0}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={""}>
                         <b></b>
@@ -55,7 +67,7 @@ class SysMenu extends React.Component{
                 </a> </li>);
                 tabcontent = (<div className="tab-pane fade in active" id={"tabcontent_"+flow.id}><Node flow={flow}/></div>)
             }else{
-                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()}><a onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()}  href={"#tabcontent_"+flow.id} data-toggle="tab">
+                flowmenucontent = (<li onMouseOver={(e)=>(this.onMouseOver.bind(this,e,flow.id,flow.flowName))()} onMouseOut={(e)=>(this.onMouseOut.bind(this,e,flow.id))()}><a id={"JumpA_"+flow.id} onClick={(e)=>(this.changeworkflow.bind(this,e,flow.id))()}  href={"#tabcontent_"+flow.id} data-toggle="tab">
                     {flow.flowName}
                     <a style={{float:'right',lineHeight:'0'}} onClick={(e)=>(this.deleteFlow.bind(this,e,flow.id,flow.flowName))()} className={""}>
                         <b></b>
@@ -79,14 +91,17 @@ class SysMenu extends React.Component{
                             <div  id="flowdefination">
                                 <ul className="block-justify btnTwo">
                                     <li>
-                                        <button className="btn btn-info btn-group-justified" id="button_bussadd">
-                                            添 加 业 务 表
-                                        </button>
+                                        {/*配置信息*/}
+                                        <ConfigInfo/>
                                     </li>
                                     <li>
-                                        <button className="btn btn-info btn-group-justified" id="button_flowadd">
-                                            添 加 流 程
-                                        </button>
+                                        <BussAdd setTableName={this.getTableName.bind(this)}/>
+                                    </li>
+                                    <li>
+                                        {/*<button className="btn btn-info btn-group-justified" id="button_flowadd">*/}
+                                            {/*添 加 流 程*/}
+                                        {/*</button>*/}
+                                        <FlowAdd tableName={this.state.tableName}/>
                                     </li>
                                 </ul>
                             </div>
@@ -98,7 +113,7 @@ class SysMenu extends React.Component{
                                 <span className='glyphicon glyphicon-menu-down'></span>
                             </h4>
                             <div>
-                                <ul className="nav nav-pills nav-stacked">
+                                <ul className="nav nav-pills nav-stacked" style={{overflow:'auto',height:'606px'}}>
                                     {flowmenuarr}
                                 </ul>
                             </div>
@@ -115,5 +130,5 @@ class SysMenu extends React.Component{
     }
 }
 ReactDom.render(<SysMenu/>,document.getElementById("main"));
-ReactDom.render(<FlowAdd/>,document.getElementById("section_flowadd"));
-ReactDom.render(<BussAdd/>,document.getElementById("section_bussadd"));
+// ReactDom.render(<FlowAdd/>,document.getElementById("section_flowadd"));
+// ReactDom.render(<BussAdd/>,document.getElementById("section_bussadd"));

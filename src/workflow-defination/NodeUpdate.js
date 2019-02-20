@@ -65,7 +65,7 @@ class NodeUpdate extends React.Component{
                                 <form action={adminPath+'/defination/nodes/'+currentNode.id} method={"post"} id={"form_nodeupdate_"+currentNode.id}>
                                     <input type={"hidden"} name={"flowId"} value={this.props["node"].flowId}/>
                                     <div className="form form-horizontal row container-fluid">
-                                        <div className="form-group">
+                                        <div style={{display:'none'}} className="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label"><font color="red">*</font> 节点id</label>
                                             </div>
@@ -75,7 +75,7 @@ class NodeUpdate extends React.Component{
                                         </div>
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label"><font color="red">*</font> 节点名称</label>
+                                                <label style={{fontSize:"14px"}} className="control-label"><font color="red">*</font> 节点名称</label>
                                             </div>
                                             <div className="col-lg-10">
                                                 <input type={"text"} name="name" className={"form-control"} defaultValue={currentNode.name}/>
@@ -83,22 +83,22 @@ class NodeUpdate extends React.Component{
                                         </div>
                                         <div className="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">节点描述</label>
+                                                <label style={{fontSize:"14px"}} className="control-label">节点描述</label>
                                             </div>
                                             <div className="col-lg-10">
-                                                <textarea className={"form-control"} rows={"2"} name={"description"} style={{resize:'none'}} defaultValue={"11"}></textarea>
+                                                <textarea className={"form-control"} rows={"2"} name={"description"} style={{resize:'none'}} defaultValue={currentNode.description}></textarea>
                                             </div>
                                         </div>
                                         <div className  ="form-group">
                                             <div className="col-lg-2 text-right">
-                                                <label className="control-label">固定分配用户</label>
+                                                <label style={{fontSize:"14px"}} className="control-label">固定分配用户</label>
                                             </div>
                                             <div className="col-lg-10">
-                                                <input type={"text"} className="form-control" name={"assignUser"}  placeholder={"去查用户ID！"}
+                                                <input type={"text"} className="form-control" name={"assignUser"}  placeholder={"去查用户登录名！"}
                                                        defaultValue={currentNode.assignUser}/>
                                             </div>
                                         </div>
-                                        <div className="form-group">
+                                        <div style={{display:'none'}} className="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label">排序号</label>
                                             </div>
@@ -110,13 +110,18 @@ class NodeUpdate extends React.Component{
                                         <div className="form-group">
                                             <div className="col-lg-10 col-lg-offset-2 clearfix">
                                                 <div className="checkbox pull-left">
-                                                    <label>
+                                                    <label style={{fontSize:"14px"}}>
                                                         <input type="checkbox" id={"beginNode_"+currentNode.id} defaultChecked={currentNode.beginNode} name={"beginNode"} value={"true"}/> 起始节点
                                                     </label>
                                                 </div>
                                                 <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
-                                                    <label>
+                                                    <label style={{fontSize:"14px"}}>
                                                         <input type="checkbox" id={"endNode_"+currentNode.id} defaultChecked={currentNode.endNode} name={"endNode"} value={true}/> 结束节点
+                                                    </label>
+                                                </div>
+                                                <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
+                                                    <label style={{fontSize:"14px"}}>
+                                                        <input type="checkbox" id={"transferOut_"+currentNode.id} defaultChecked={currentNode.transferOut} name={"transferOut"}  value={true}/> 允许转出
                                                     </label>
                                                 </div>
                                             </div>

@@ -5,7 +5,12 @@ import {refreshWin,ajaxreq,ajax_content_type,serializeformajax} from '../common'
 class NodeAdd extends React.Component{
     constructor(){
         super();
+        this.state = {
+            assignUser : ''
+        }
         this.saveNode = this.saveNode.bind(this);
+        this.endNodeOnChange = this.endNodeOnChange.bind(this);
+        this.assignUserChange = this.assignUserChange.bind(this);
     }
     componentDidMount(){
         let flowid = this.props['flow'].id;
@@ -21,13 +26,21 @@ class NodeAdd extends React.Component{
             });
         });
     }
+    endNodeOnChange(e){ // 勾选结束节点时,为 固定分配用户 赋默认值
+        if (e.target.checked) {
+            this.setState({assignUser : 'superallcandoman'});
+        }
+    }
+    assignUserChange(e){
+        this.setState({assignUser:e.target.value});
+    }
     saveNode(){
         let flowid = this.props['flow'].id;
-        let nodeDefId = $('#form_nodeadd_'+flowid).find('[name="nodeDefId"]').val();
-        if(nodeDefId == '' || nodeDefId.split('-').length == 0 || nodeDefId.indexOf("audit-")!=0){
-            alert('节点id格式错误');
-            return ;
-        }
+        // let nodeDefId = $('#form_nodeadd_'+flowid).find('[name="nodeDefId"]').val();
+        // if(nodeDefId == '' || nodeDefId.split('-').length == 0 || nodeDefId.indexOf("audit-")!=0){
+        //     alert('节点id格式错误');
+        //     return ;
+        // }
         let data = serializeformajax($('#form_nodeadd_'+flowid));
         let nodeobj = this.props['node'];
         ajaxreq($('#form_nodeadd_'+flowid).attr('action'),{
@@ -62,7 +75,7 @@ class NodeAdd extends React.Component{
                                 <form action={adminPath+'/defination/nodes'} method={"post"} id={"form_nodeadd_"+this.props['flow'].id}>
                                     <input type={"hidden"} name={"flowId"} value={this.props["flow"].id}/>
                                     <div className="form form-horizontal row container-fluid">
-                                        <div className="form-group">
+                                        <div style={{display:'none'}} className="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label"><font color="red">*</font> 节点id</label>
                                             </div>
@@ -91,10 +104,11 @@ class NodeAdd extends React.Component{
                                                 <label className="control-label">固定分配用户</label>
                                             </div>
                                             <div className="col-lg-10">
-                                                <input type={"text"} className="form-control" name={"assignUser"}  placeholder={"去查用户ID！"}/>
+                                                <input type={"text"} className="form-control" onChange={this.assignUserChange} value={this.state.assignUser} name={"assignUser"}
+                                                       placeholder={"如果需要固定分配用户请输入用户登录名"}/>
                                             </div>
                                         </div>
-                                        <div className="form-group">
+                                        <div style={{display:'none'}} className="form-group">
                                             <div className="col-lg-2 text-right">
                                                 <label className="control-label">排序号</label>
                                             </div>
@@ -111,7 +125,12 @@ class NodeAdd extends React.Component{
                                                 </div>
                                                 <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
                                                     <label>
-                                                        <input type="checkbox" name={"endNode"} value={true}/> 结束节点
+                                                        <input type="checkbox" name={"endNode"} onChange={this.endNodeOnChange} value={true}/> 结束节点
+                                                    </label>
+                                                </div>
+                                                <div className="checkbox pull-left" style={{marginLeft:'20px'}}>
+                                                    <label>
+                                                        <input type="checkbox" name={"transferOut"}  value={true}/> 允许转出
                                                     </label>
                                                 </div>
                                             </div>
